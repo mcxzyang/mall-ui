@@ -26,6 +26,8 @@ export default {
   'menu.product.list.create': '创建商品',
   'menu.productGroup': '商品分组管理',
   'menu.productGroup.list': '商品分组列表',
+  'menu.category': '分类管理',
+  'menu.category.list': '第三方分类',
   ...localeSettings,
   ...localeMessageBox,
   ...localeLogin,

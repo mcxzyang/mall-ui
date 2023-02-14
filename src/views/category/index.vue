@@ -1,7 +1,7 @@
 <template>
   <div class="container">
-    <Breadcrumb :items="['商品分组管理', '商品分组列表']" />
-    <a-card class="general-card" title="商品分组列表">
+    <Breadcrumb :items="['分类管理', '第三方分类列表']" />
+    <a-card class="general-card" title="第三方分类列表">
       <a-row>
         <a-col :flex="1">
           <a-form
@@ -12,8 +12,8 @@
           >
             <a-row :gutter="16">
               <a-col :span="8">
-                <a-form-item field="name" label="分组名称">
-                  <a-input v-model="formModel.name" placeholder="分组名称" />
+                <a-form-item field="name" label="分类名称">
+                  <a-input v-model="formModel.name" placeholder="分类名称" />
                 </a-form-item>
               </a-col>
             </a-row>
@@ -96,35 +96,12 @@
         </template>
       </a-table>
     </a-card>
-
-    <a-modal
-      v-model:visible="visible"
-      width="auto"
-      @cancel="handleCancel"
-      @before-ok="handleBeforeOk"
-    >
-      <template #title> {{ modalData.id ? '编辑' : '创建' }} </template>
-      <div>
-        <a-form ref="modalFormRef" :model="modalData">
-          <a-row>
-            <a-col :span="24">
-              <a-form-item
-                label="分组名称"
-                field="name"
-                :rules="[{ required: true, message: '请填写分组名称' }]"
-              >
-                <a-input v-model="modalData.name"></a-input>
-              </a-form-item>
-            </a-col>
-            <a-col :span="24">
-              <a-form-item label="分组图片" field="image">
-                <Uploader v-model="modalData.image" />
-              </a-form-item>
-            </a-col>
-          </a-row>
-        </a-form>
-      </div>
-    </a-modal>
+    <FormModal
+      :visible="modalVisble"
+      :form-data="formData"
+      @update-visible="updateVisible"
+      @update-success="updateSuccess"
+    />
   </div>
 </template>
 
@@ -136,18 +113,14 @@
   // import cloneDeep from 'lodash/cloneDeep';
   import {
     queryPolicyList,
-    saveRecord,
-    addRecord,
     deleteRecord,
     PolicyRecord,
     PolicyParams,
-  } from '@/api/productGroup';
+  } from '@/api/category';
   import { Message } from '@arco-design/web-vue';
-
-  import Uploader from '@/components/uploader/index.vue';
+  import FormModal from './components/form-modal.vue';
 
   type SizeProps = 'mini' | 'small' | 'medium' | 'large';
-  // type Column = TableColumnData & { checked?: true };
 
   const generateFormModel = () => {
     return {
@@ -158,19 +131,8 @@
   const renderData = ref<PolicyRecord[]>([]);
   const formModel = ref(generateFormModel());
 
-  const visible = ref(false);
-  const generateModalData = () => {
-    return {
-      id: null,
-      name: '',
-      image: '',
-    };
-  };
-  const modalData = ref({
-    id: null,
-    name: '',
-    image: '',
-  });
+  const modalVisble = ref(false);
+  const formData = ref<PolicyRecord>();
 
   const size = ref<SizeProps>('medium');
 
@@ -188,13 +150,13 @@
       dataIndex: 'id',
     },
     {
-      title: '分组名称',
+      title: '名称',
       dataIndex: 'name',
     },
     {
-      title: '分组图片',
-      dataIndex: 'image',
-      slotName: 'image',
+      title: '状态',
+      dataIndex: 'status',
+      slotName: 'status',
     },
     {
       title: '创建时间',
@@ -222,51 +184,28 @@
       setLoading(false);
     }
   };
-  const modalFormRef = ref(null);
 
-  const handleCancel = () => {
-    const validateRef: any = modalFormRef.value;
-    validateRef?.clearValidate();
-    visible.value = false;
-  };
   const handleEdit = (item: any) => {
-    modalData.value = item;
-    visible.value = true;
+    formData.value = item;
+    modalVisble.value = true;
   };
   const handledelete = async (item: any) => {
     await deleteRecord(item.id);
     Message.success('删除成功');
     fetchData();
   };
-  const handleBeforeOk = (done: (closed: boolean) => void) => {
-    const validateRef: any = modalFormRef.value;
-    if (validateRef) {
-      validateRef.validate().then(async (res: any) => {
-        if (!res) {
-          try {
-            if (!modalData.value.id) {
-              await addRecord(modalData.value);
-            } else {
-              await saveRecord(modalData.value.id, modalData.value);
-            }
-            done(true);
-
-            visible.value = false;
-            fetchData();
-            generateFormModel();
-            Message.success('操作成功');
-          } catch (e) {
-            done(false);
-          }
-        }
-        done(false);
-      });
-    }
-  };
 
   const handleAdd = () => {
-    modalData.value = generateModalData();
-    visible.value = true;
+    modalVisble.value = true;
+  };
+
+  const updateVisible = (visible: boolean) => {
+    modalVisble.value = visible;
+  };
+
+  const updateSuccess = () => {
+    modalVisble.value = false;
+    fetchData();
   };
 
   const search = () => {
