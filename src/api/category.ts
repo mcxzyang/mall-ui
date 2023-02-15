@@ -26,8 +26,8 @@ export interface PolicyListRes {
   total: number;
 }
 
-export function queryPolicyList(params: PolicyParams) {
-  return axios.get<PolicyListRes>('/category', {
+export function queryPolicyList(params: PolicyParams | any) {
+  return axios.get<PolicyListRes | any>('/category', {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);

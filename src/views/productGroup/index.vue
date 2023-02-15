@@ -161,13 +161,13 @@
   const visible = ref(false);
   const generateModalData = () => {
     return {
-      id: null,
+      id: 0,
       name: '',
       image: '',
     };
   };
   const modalData = ref({
-    id: null,
+    id: 0,
     name: '',
     image: '',
   });

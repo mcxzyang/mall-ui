@@ -1,7 +1,7 @@
 <template>
   <div class="container">
-    <Breadcrumb :items="['商品管理', '商品列表']" />
-    <a-card class="general-card" title="商品列表">
+    <Breadcrumb :items="['企业入驻', '企业列表']" />
+    <a-card class="general-card" title="企业列表">
       <a-row>
         <a-col :flex="1">
           <a-form
@@ -12,8 +12,8 @@
           >
             <a-row :gutter="16">
               <a-col :span="8">
-                <a-form-item field="name" label="商品名称">
-                  <a-input v-model="formModel.name" placeholder="商品名称" />
+                <a-form-item field="name" label="企业名称">
+                  <a-input v-model="formModel.name" placeholder="企业名称" />
                 </a-form-item>
               </a-col>
             </a-row>
@@ -41,14 +41,12 @@
       <a-row style="margin-bottom: 16px">
         <a-col :span="12">
           <a-space>
-            <router-link :to="{ name: 'ProductCreate' }">
-              <a-button type="primary">
-                <template #icon>
-                  <icon-plus />
-                </template>
-                新增
-              </a-button>
-            </router-link>
+            <a-button type="primary" @click="handleAdd">
+              <template #icon>
+                <icon-plus />
+              </template>
+              新增
+            </a-button>
           </a-space>
         </a-col>
         <a-col
@@ -67,14 +65,6 @@
         :size="size"
         @page-change="onPageChange"
       >
-        <template #image="{ record }">
-          <a-image
-            v-if="record.image"
-            fit="fill"
-            width="100"
-            :src="record.image"
-          />
-        </template>
         <template #status="{ record }">
           <span v-if="record.status === 1" class="circle"></span>
           <span v-else class="circle pass"></span>
@@ -98,6 +88,12 @@
         </template>
       </a-table>
     </a-card>
+    <FormModal
+      :visible="modalVisble"
+      :form-data="formData"
+      @update-visible="updateVisible"
+      @update-success="updateSuccess"
+    />
   </div>
 </template>
 
@@ -106,14 +102,15 @@
   import useLoading from '@/hooks/loading';
   import { Pagination } from '@/types/global';
   import type { TableColumnData } from '@arco-design/web-vue/es/table/interface';
-
+  // import cloneDeep from 'lodash/cloneDeep';
   import {
     queryPolicyList,
     deleteRecord,
     PolicyRecord,
     PolicyParams,
-  } from '@/api/product';
+  } from '@/api/company';
   import { Message } from '@arco-design/web-vue';
+  import FormModal from './components/form-modal.vue';
 
   type SizeProps = 'mini' | 'small' | 'medium' | 'large';
 
@@ -126,6 +123,7 @@
   const renderData = ref<PolicyRecord[]>([]);
   const formModel = ref(generateFormModel());
 
+  const modalVisble = ref(false);
   const formData = ref<PolicyRecord>();
 
   const size = ref<SizeProps>('medium');
@@ -140,43 +138,34 @@
 
   const columnsList = ref<TableColumnData[]>([
     {
-      title: '主图',
-      dataIndex: 'image',
-      slotName: 'image',
-    },
-    {
       title: 'ID',
       dataIndex: 'id',
     },
     {
-      title: '商品名称',
-      dataIndex: 'title',
+      title: '唯一标识',
+      dataIndex: 'key',
     },
     {
-      title: '商品编码',
-      dataIndex: 'product_number',
+      title: '企业名称',
+      dataIndex: 'name',
     },
     {
-      title: '售价（元）',
-      dataIndex: 'first_sku.sale_price',
+      title: '联系人',
+      dataIndex: 'link_name',
     },
     {
-      title: '库存',
-      dataIndex: 'first_sku.stock',
-    },
-    {
-      title: '销量',
-      dataIndex: 'sales_number',
+      title: '联系电话',
+      dataIndex: 'link_phone',
     },
     {
       title: '状态',
       dataIndex: 'status',
       slotName: 'status',
     },
-    // {
-    //   title: '创建时间',
-    //   dataIndex: 'created_at',
-    // },
+    {
+      title: '创建时间',
+      dataIndex: 'created_at',
+    },
     {
       title: '操作',
       dataIndex: 'operations',
@@ -202,10 +191,24 @@
 
   const handleEdit = (item: any) => {
     formData.value = item;
+    modalVisble.value = true;
   };
   const handledelete = async (item: any) => {
     await deleteRecord(item.id);
     Message.success('删除成功');
+    fetchData();
+  };
+
+  const handleAdd = () => {
+    modalVisble.value = true;
+  };
+
+  const updateVisible = (visible: boolean) => {
+    modalVisble.value = visible;
+  };
+
+  const updateSuccess = () => {
+    modalVisble.value = false;
     fetchData();
   };
 

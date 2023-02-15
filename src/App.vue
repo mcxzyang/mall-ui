@@ -39,4 +39,9 @@
     background: var(--color-bg-2);
     text-align: right;
   }
+  .flex-between {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 </style>

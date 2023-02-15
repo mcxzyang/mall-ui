@@ -14,6 +14,9 @@
   import { isNumber } from '@/utils/is';
   import propTypes from '@/utils/propTypes';
 
+  import { userUploadApi } from '@/api/tools';
+  import { Message } from '@arco-design/web-vue';
+
   type InsertFnType = (url: string, alt: string, href: string) => void;
 
   const props = defineProps({
@@ -70,16 +73,16 @@
       MENU_CONF: {
         uploadImage: {
           async customUpload(file: File, insertFn: InsertFnType) {
-            // TS 语法
-            // async customUpload(file, insertFn) {                   // JS 语法
-            // file 即选中的文件
-            // 自己实现上传，并得到图片 url alt href
-            // 最后插入图片
-            insertFn(
-              'https://www.wangeditor.com/image/logo.png',
-              'logo',
-              'https://www.wangeditor.com/image/logo.png'
-            );
+            const formData = new FormData();
+            formData.append('pic', file);
+
+            try {
+              const res = await userUploadApi(formData);
+              const url = res.data.url as any;
+              insertFn(url, 'image', url);
+            } catch (error) {
+              Message.error('上传失败');
+            }
           },
         },
       },
