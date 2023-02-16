@@ -138,8 +138,6 @@
   const renderData = ref<PolicyRecord[]>([]);
   const formModel = ref(generateFormModel());
 
-  const formData = ref<PolicyRecord>();
-
   const size = ref<SizeProps>('medium');
 
   const basePagination: Pagination = {
