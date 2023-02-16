@@ -203,7 +203,7 @@
     product_group_id: '',
     category_id: '',
     provider: '',
-    is_free_post: true,
+    is_free_post: 1,
     product_skus: [],
     companies: [],
     content: '',

@@ -73,11 +73,6 @@
             :src="record.image"
           />
         </template>
-        <template #status="{ record }">
-          <span v-if="record.status === 'offline'" class="circle"></span>
-          <span v-else class="circle pass"></span>
-          已上线
-        </template>
         <template #operations="{ record }">
           <a-space>
             <a-button type="outline" size="small" @click="handleEdit(record)">
@@ -153,11 +148,11 @@
       title: '名称',
       dataIndex: 'name',
     },
-    {
-      title: '状态',
-      dataIndex: 'status',
-      slotName: 'status',
-    },
+    // {
+    //   title: '状态',
+    //   dataIndex: 'status',
+    //   slotName: 'status',
+    // },
     {
       title: '创建时间',
       dataIndex: 'created_at',

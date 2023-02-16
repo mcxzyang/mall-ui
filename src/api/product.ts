@@ -20,7 +20,7 @@ export interface PolicyRecord {
   product_group_id?: number | string;
   category_id?: number | string;
   provider?: string;
-  is_free_post?: boolean;
+  is_free_post?: 1;
   status?: number;
   product_skus?: ProductSku[];
   created_at?: string;
