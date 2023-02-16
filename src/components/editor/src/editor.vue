@@ -12,7 +12,7 @@
   import { Editor, Toolbar } from '@wangeditor/editor-for-vue';
   import { IDomEditor, IEditorConfig } from '@wangeditor/editor';
   import { isNumber } from '@/utils/is';
-  import propTypes from '@/utils/propTypes';
+  // import propTypes from '@/utils/propTypes';
 
   import { userUploadApi } from '@/api/tools';
   import { Message } from '@arco-design/web-vue';
@@ -20,13 +20,25 @@
   type InsertFnType = (url: string, alt: string, href: string) => void;
 
   const props = defineProps({
-    editorId: propTypes.string.def('wangeEditor-1'),
-    height: propTypes.oneOfType([Number, String]).def('500px'),
+    // editorId: propTypes.string.def('wangeEditor-1'),
+    editorId: {
+      type: String,
+      default: 'wangeEditor-1',
+    },
+    // height: propTypes.oneOfType([Number, String]).def('500px'),
+    height: {
+      type: [Number, String],
+      default: '500px',
+    },
     editorConfig: {
       type: Object as PropType<IEditorConfig>,
       default: () => undefined,
     },
-    modelValue: propTypes.string.def(''),
+    // modelValue: propTypes.string.def(''),
+    modelValue: {
+      type: String,
+      default: '',
+    },
   });
   const emit = defineEmits(['change', 'update:modelValue']);
   // 编辑器实例，必须用 shallowRef

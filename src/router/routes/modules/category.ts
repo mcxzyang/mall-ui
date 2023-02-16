@@ -8,7 +8,7 @@ const CATEGORY: AppRouteRecordRaw = {
   meta: {
     locale: 'menu.category',
     requiresAuth: true,
-    icon: 'icon-star',
+    icon: 'icon-tag',
     order: 3,
   },
   children: [

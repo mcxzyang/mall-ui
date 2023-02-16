@@ -8,7 +8,7 @@ const PRODUCTGROUP: AppRouteRecordRaw = {
   meta: {
     locale: 'menu.productGroup',
     requiresAuth: true,
-    icon: 'icon-star',
+    icon: 'icon-folder',
     order: 2,
   },
   children: [

@@ -4,7 +4,6 @@ import { PropType } from 'vue';
 
 export interface ProductSku {
   id: number;
-  index: number;
   sku_number: string;
   sku_name: string;
   sale_price: number | string;
@@ -25,7 +24,7 @@ export interface PolicyRecord {
   status?: number;
   product_skus?: ProductSku[];
   created_at?: string;
-  company_ids: PropType<number[]>;
+  companies: PropType<number[]>;
   content: string;
 }
 
@@ -52,6 +51,10 @@ export function queryPolicyList(params: PolicyParams) {
       return qs.stringify(obj);
     },
   });
+}
+
+export function getRecord(id: number | string) {
+  return axios.get<PolicyRecord>(`/product/${id}`);
 }
 
 export function saveRecord(id: number, params: PolicyRecord) {

@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <Breadcrumb :items="['商品管理', '创建商品']" />
+    <Breadcrumb :items="['商品管理', formatTitle]" />
     <a-form
       ref="formRef"
       layout="vertical"
@@ -41,7 +41,7 @@
 
             <a-col :span="12">
               <a-form-item field="multiSelect" label="请选择需要发布的企业">
-                <a-select v-model="formData.company_ids" multiple>
+                <a-select v-model="formData.companies" multiple>
                   <a-option
                     v-for="(item, key) in companyList"
                     :key="key"
@@ -120,7 +120,6 @@
           <a-table
             :columns="skuColumns"
             :data="formData.product_skus"
-            row-key="index"
             :pagination="false"
           >
             <template #sku_number="{ record }">
@@ -136,18 +135,18 @@
               <a-input v-model="record.original_price" />
             </template>
             <template #stock="{ record }">
-              <a-input v-model="record.stock" />
+              <a-input-number v-model="record.stock" />
             </template>
             <template #unit="{ record }">
               <a-input v-model="record.unit" />
             </template>
-            <template #operations="{ rowIndex }">
+            <template #operations="{ record }">
               <a-space>
                 <a-button
                   type="outline"
                   status="danger"
                   size="small"
-                  @click="deleteSku(rowIndex)"
+                  @click="deleteSku(record)"
                 >
                   删除
                 </a-button>
@@ -161,8 +160,8 @@
 </template>
 
 <script setup lang="ts">
-  import { reactive, ref } from 'vue';
-  import { useRouter } from 'vue-router';
+  import { ref, computed, onMounted } from 'vue';
+  import { useRouter, useRoute } from 'vue-router';
   import type { TableColumnData } from '@arco-design/web-vue/es/table/interface';
 
   import { Editor } from '@/components/editor';
@@ -179,23 +178,42 @@
     queryPolicyList as queryCategoryList,
   } from '@/api/category';
 
-  import { PolicyRecord as ProductPolicy, addRecord } from '@/api/product';
+  import {
+    PolicyRecord as ProductPolicy,
+    addRecord,
+    getRecord,
+    saveRecord,
+  } from '@/api/product';
   import { Message } from '@arco-design/web-vue';
 
   const router = useRouter();
+  const route = useRoute();
 
-  const formData = reactive<ProductPolicy>({
+  const productId: any = route.params?.id;
+
+  const formatTitle = computed(() => {
+    return productId ? '编辑商品' : '创建商品';
+  });
+
+  const formData = ref<ProductPolicy>({
     id: 0,
     title: '',
-    company_ids: [],
     image: '',
-    content: '',
     product_number: '',
     product_group_id: '',
     category_id: '',
     provider: '',
     is_free_post: true,
     product_skus: [],
+    companies: [],
+    content: '',
+  });
+
+  onMounted(async () => {
+    if (productId) {
+      const { data } = await getRecord(productId);
+      formData.value = data;
+    }
   });
 
   const skuColumns = ref<TableColumnData[]>([
@@ -239,12 +257,11 @@
   const generateSku = () => {
     return {
       id: 0,
-      index: 0,
       sku_number: '',
       sku_name: '',
       sale_price: '',
       original_price: '',
-      stock: '',
+      stock: 0,
       unit: '',
     };
   };
@@ -273,11 +290,14 @@
   const addSku = () => {
     const tmpSku = generateSku();
     // tmpSku.index = productSkuList.length + 1;
-    formData.product_skus?.push(tmpSku);
+    formData.value.product_skus?.push(tmpSku);
   };
 
-  const deleteSku = (rowIndex: number) => {
-    formData.product_skus?.splice(rowIndex, 1);
+  const deleteSku = (record: any) => {
+    const index: any = formData.value.product_skus?.indexOf(record);
+    if (index !== -1) {
+      formData.value.product_skus?.splice(index, 1);
+    }
   };
 
   const handleSubmit = async ({
@@ -290,7 +310,11 @@
     if (errors) {
       return;
     }
-    await addRecord({ ...values });
+    if (!formData.value.id) {
+      await addRecord({ ...values });
+    } else {
+      await saveRecord(formData.value.id, { ...values });
+    }
 
     router.push({ name: 'ProductList' });
     Message.success('操作成功');

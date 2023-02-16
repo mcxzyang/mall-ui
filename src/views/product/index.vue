@@ -41,7 +41,7 @@
       <a-row style="margin-bottom: 16px">
         <a-col :span="12">
           <a-space>
-            <router-link :to="{ name: 'ProductCreate' }">
+            <router-link :to="{ name: 'ProductOperation' }">
               <a-button type="primary">
                 <template #icon>
                   <icon-plus />
@@ -76,9 +76,19 @@
           />
         </template>
         <template #status="{ record }">
-          <span v-if="record.status === 1" class="circle"></span>
+          <a-switch
+            v-model="record.status"
+            :checked-value="1"
+            :unchecked-value="0"
+            @change="changeStatus($event, record)"
+          >
+            <template #checked> 是 </template>
+            <template #unchecked> 否 </template>
+          </a-switch>
+
+          <!-- <span v-if="record.status === 1" class="circle"></span>
           <span v-else class="circle pass"></span>
-          {{ record.status === 1 ? '正常' : '已禁用' }}
+          {{ record.status === 1 ? '正常' : '已禁用' }} -->
         </template>
         <template #operations="{ record }">
           <a-space>
@@ -112,8 +122,10 @@
     deleteRecord,
     PolicyRecord,
     PolicyParams,
+    saveRecord,
   } from '@/api/product';
   import { Message } from '@arco-design/web-vue';
+  import router from '@/router';
 
   type SizeProps = 'mini' | 'small' | 'medium' | 'large';
 
@@ -169,7 +181,7 @@
       dataIndex: 'sales_number',
     },
     {
-      title: '状态',
+      title: '上架状态',
       dataIndex: 'status',
       slotName: 'status',
     },
@@ -201,7 +213,12 @@
   };
 
   const handleEdit = (item: any) => {
-    formData.value = item;
+    router.push({
+      name: 'ProductOperation',
+      params: {
+        id: item.id,
+      },
+    });
   };
   const handledelete = async (item: any) => {
     await deleteRecord(item.id);
@@ -222,5 +239,11 @@
   fetchData();
   const reset = () => {
     formModel.value = generateFormModel();
+  };
+
+  const changeStatus = async (value: any, record: PolicyRecord) => {
+    await saveRecord(record.id, record);
+    Message.success('操作成功');
+    fetchData();
   };
 </script>

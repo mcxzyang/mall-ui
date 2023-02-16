@@ -23,9 +23,9 @@ const PRODUCT: AppRouteRecordRaw = {
       },
     },
     {
-      path: 'create',
-      name: 'ProductCreate',
-      component: () => import('@/views/product/create.vue'),
+      path: 'operation/:id?',
+      name: 'ProductOperation',
+      component: () => import('@/views/product/operation.vue'),
       meta: {
         locale: 'menu.product.list.create',
         requiresAuth: true,
