@@ -72,6 +72,7 @@
             v-if="record.image"
             fit="fill"
             width="100"
+            :style="{ cursor: 'pointer' }"
             :src="record.image"
           />
         </template>
