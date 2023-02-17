@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "private": true,
   "author": "ArcoDesign Team",
-  "license": "ISC",
+  "license": "MIT",
   "scripts": {
     "dev": "vite --config ./config/vite.config.dev.ts",
     "build": "vue-tsc --noEmit && vite build --config ./config/vite.config.prod.ts",
