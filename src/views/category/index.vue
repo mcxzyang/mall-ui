@@ -122,6 +122,7 @@
       name: '',
     };
   };
+
   const { loading, setLoading } = useLoading(true);
   const renderData = ref<PolicyRecord[]>([]);
   const formModel = ref(generateFormModel());
