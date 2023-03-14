@@ -1,7 +1,7 @@
 <template>
   <a-modal
     v-model:visible="modalVisible"
-    width="auto"
+    width="600"
     @cancel="handleCancel"
     @before-ok="handleBeforeOk"
   >

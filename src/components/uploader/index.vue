@@ -50,6 +50,8 @@
             url: value,
           },
         ];
+      } else {
+        fileList.value = [];
       }
     },
     {
