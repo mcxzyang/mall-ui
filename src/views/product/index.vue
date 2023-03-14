@@ -67,6 +67,12 @@
         :size="size"
         @page-change="onPageChange"
       >
+        <template #stock="{ record }">
+          <span v-if="record.first_sku.stock > 0">{{
+            record.first_sku.stock
+          }}</span>
+          <span v-else>无限制</span>
+        </template>
         <template #image="{ record }">
           <a-image
             v-if="record.image"
@@ -174,6 +180,7 @@
     {
       title: '库存',
       dataIndex: 'first_sku.stock',
+      slotName: 'stock',
     },
     {
       title: '销量',
