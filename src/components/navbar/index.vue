@@ -222,7 +222,7 @@
     valueDark: 'dark',
     valueLight: 'light',
     storageKey: 'arco-theme',
-    initialValue: appStore.theme,
+    initialValue: 'light',
     onChanged(dark: boolean) {
       // overridden default behavior
       appStore.toggleTheme(dark);
