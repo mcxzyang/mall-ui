@@ -56,7 +56,7 @@
                 <a-input v-model="formData.product_number"> </a-input>
               </a-form-item>
             </a-col>
-            <a-col :span="12">
+            <!-- <a-col :span="12">
               <a-form-item field="product_group_id" label="商品分组">
                 <a-select v-model="formData.product_group_id">
                   <a-option
@@ -67,7 +67,7 @@
                   >
                 </a-select>
               </a-form-item>
-            </a-col>
+            </a-col> -->
             <a-col :span="12">
               <a-form-item field="category_id" label="商品分类">
                 <a-tree-select
@@ -86,11 +86,6 @@
               </a-form-item>
             </a-col>
             <a-col :span="12">
-              <a-form-item field="image" label="商品图片">
-                <Uploader v-model="formData.image" />
-              </a-form-item>
-            </a-col>
-            <a-col :span="12">
               <a-form-item field="is_free_post" label="是否免邮">
                 <a-switch
                   v-model="formData.is_free_post"
@@ -100,6 +95,11 @@
                   <template #checked> 是 </template>
                   <template #unchecked> 否 </template>
                 </a-switch>
+              </a-form-item>
+            </a-col>
+            <a-col :span="12">
+              <a-form-item field="image" label="商品图片">
+                <Uploader v-model="formData.image" />
               </a-form-item>
             </a-col>
 

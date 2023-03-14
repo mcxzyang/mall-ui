@@ -19,6 +19,11 @@
             </a-form-item>
           </a-col>
           <a-col :span="24">
+            <a-form-item label="分组图片" field="image">
+              <Uploader v-model="modalData.image" />
+            </a-form-item>
+          </a-col>
+          <a-col :span="24">
             <a-form-item label="上级分类" field="pid">
               <a-select v-model="modalData.pid">
                 <a-option
@@ -48,6 +53,8 @@
   import { Message } from '@arco-design/web-vue';
   import { cloneDeep } from 'lodash';
 
+  import Uploader from '@/components/uploader/index.vue';
+
   const props = defineProps({
     visible: {
       type: Boolean,
@@ -75,6 +82,7 @@
       id: 0,
       name: '',
       pid: 0,
+      image: '',
     };
   };
 

@@ -58,12 +58,10 @@
       <a-table
         row-key="id"
         :loading="loading"
-        :pagination="pagination"
         :columns="columnsList"
         :data="renderData"
         :bordered="false"
-        :size="size"
-        @page-change="onPageChange"
+        :pagination="false"
       >
         <template #image="{ record }">
           <a-image
@@ -130,16 +128,6 @@
   const modalVisble = ref(false);
   const formData = ref<PolicyRecord>();
 
-  const size = ref<SizeProps>('medium');
-
-  const basePagination: Pagination = {
-    page: 1,
-    pageSize: 20,
-  };
-  const pagination = reactive({
-    ...basePagination,
-  });
-
   const columnsList = ref<TableColumnData[]>([
     {
       title: 'ID',
@@ -148,6 +136,11 @@
     {
       title: '名称',
       dataIndex: 'name',
+    },
+    {
+      title: '图片',
+      dataIndex: 'image',
+      slotName: 'image',
     },
     // {
     //   title: '状态',
@@ -171,9 +164,9 @@
     setLoading(true);
     try {
       const { data } = await queryPolicyList(params);
-      renderData.value = data.data;
-      pagination.page = data.current_page;
-      pagination.total = data.total;
+      renderData.value = data;
+      // pagination.page = data.current_page;
+      // pagination.total = data.total;
     } catch (err) {
       // you can report use errorHandler or other
     } finally {
@@ -206,12 +199,8 @@
 
   const search = () => {
     fetchData({
-      ...basePagination,
       ...formModel.value,
     } as unknown as PolicyParams);
-  };
-  const onPageChange = (page: number) => {
-    fetchData({ ...basePagination, page });
   };
 
   fetchData();

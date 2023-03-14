@@ -27,7 +27,7 @@ export default {
   'menu.productGroup': '商品分组管理',
   'menu.productGroup.list': '商品分组列表',
   'menu.category': '分类管理',
-  'menu.category.list': '第三方分类',
+  'menu.category.list': '分类列表',
   'menu.company': '企业入驻',
   'menu.company.list': '企业列表',
   ...localeSettings,

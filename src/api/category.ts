@@ -7,6 +7,7 @@ export interface PolicyRecord {
   name: string;
   status?: number;
   remark?: string | null;
+  image?: string;
   created_at?: string;
 }
 
@@ -26,8 +27,12 @@ export interface PolicyListRes {
   total: number;
 }
 
+export interface PolicyArrayRes {
+  data: PolicyRecord[];
+}
+
 export function queryPolicyList(params: PolicyParams | any) {
-  return axios.get<PolicyListRes | any>('/category', {
+  return axios.get<PolicyArrayRes | any>('/category', {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
