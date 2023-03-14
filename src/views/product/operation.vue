@@ -128,6 +128,9 @@
             <template #sku_name="{ record }">
               <a-input v-model="record.sku_name" />
             </template>
+            <template #cost_price="{ record }">
+              <a-input v-model="record.cost_price" />
+            </template>
             <template #sale_price="{ record }">
               <a-input v-model="record.sale_price" />
             </template>
@@ -153,6 +156,10 @@
               </a-space>
             </template>
           </a-table>
+          <a-divider />
+          <div style="text-align: right"
+            >Ps: 如果不限制库存，请在库存列填写 -1000</div
+          >
         </a-card>
       </a-space>
     </a-form>
@@ -228,6 +235,11 @@
       slotName: 'sku_name',
     },
     {
+      title: '成本价（元）',
+      dataIndex: 'cost_price',
+      slotName: 'cost_price',
+    },
+    {
       title: '售价（元）',
       dataIndex: 'sale_price',
       slotName: 'sale_price',
@@ -259,6 +271,7 @@
       id: 0,
       sku_number: '',
       sku_name: '',
+      cost_price: '',
       sale_price: '',
       original_price: '',
       stock: 0,

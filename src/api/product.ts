@@ -6,6 +6,7 @@ export interface ProductSku {
   id: number;
   sku_number: string;
   sku_name: string;
+  cost_price: number | string;
   sale_price: number | string;
   original_price: string | number;
   unit: string;
