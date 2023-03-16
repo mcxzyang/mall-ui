@@ -1,7 +1,7 @@
 <template>
   <div class="container">
-    <Breadcrumb :items="['企业入驻', '企业列表']" />
-    <a-card class="general-card" title="企业列表">
+    <Breadcrumb :items="['订单管理', '订单列表']" />
+    <a-card class="general-card" title="订单列表">
       <a-row>
         <a-col :flex="1">
           <a-form
@@ -12,8 +12,8 @@
           >
             <a-row :gutter="16">
               <a-col :span="8">
-                <a-form-item field="name" label="企业名称">
-                  <a-input v-model="formModel.name" placeholder="企业名称" />
+                <a-form-item field="name" label="订单号">
+                  <a-input v-model="formModel.order_no" placeholder="订单号" />
                 </a-form-item>
               </a-col>
             </a-row>
@@ -38,23 +38,7 @@
         </a-col>
       </a-row>
       <a-divider style="margin-top: 0" />
-      <a-row style="margin-bottom: 16px">
-        <a-col :span="12">
-          <a-space>
-            <a-button type="primary" @click="handleAdd">
-              <template #icon>
-                <icon-plus />
-              </template>
-              新增
-            </a-button>
-          </a-space>
-        </a-col>
-        <a-col
-          :span="12"
-          style="display: flex; align-items: center; justify-content: end"
-        >
-        </a-col>
-      </a-row>
+
       <a-table
         row-key="id"
         :loading="loading"
@@ -65,15 +49,32 @@
         :size="size"
         @page-change="onPageChange"
       >
+        <template #stock="{ record }">
+          <span v-if="record.first_sku.stock > 0">{{
+            record.first_sku.stock
+          }}</span>
+          <span v-else>无限制</span>
+        </template>
+        <template #image="{ record }">
+          <a-image
+            v-if="record.image"
+            fit="fill"
+            width="100"
+            :style="{ cursor: 'pointer' }"
+            :src="record.image"
+          />
+        </template>
         <template #status="{ record }">
-          <span v-if="record.status === 1" class="circle"></span>
+          <a-tag :color="record.status_color">{{ record.status_text }}</a-tag>
+
+          <!-- <span v-if="record.status === 1" class="circle"></span>
           <span v-else class="circle pass"></span>
-          {{ record.status === 1 ? '正常' : '已禁用' }}
+          {{ record.status === 1 ? '正常' : '已禁用' }} -->
         </template>
         <template #operations="{ record }">
           <a-space>
-            <a-button type="text" size="mini" @click="handleEdit(record)">
-              编辑
+            <a-button type="text" size="mini" @click="handleView(record)">
+              查看
             </a-button>
             <a-popconfirm
               content="确定删除此条记录吗?"
@@ -88,43 +89,29 @@
         </template>
       </a-table>
     </a-card>
-    <FormModal
-      :visible="modalVisble"
-      :form-data="formData"
-      @update-visible="updateVisible"
-      @update-success="updateSuccess"
-    />
   </div>
 </template>
 
 <script lang="ts" setup>
-  import { ref, reactive } from 'vue';
+  import { ref, reactive, computed } from 'vue';
   import useLoading from '@/hooks/loading';
   import { Pagination } from '@/types/global';
   import type { TableColumnData } from '@arco-design/web-vue/es/table/interface';
-  // import cloneDeep from 'lodash/cloneDeep';
-  import {
-    queryPolicyList,
-    deleteRecord,
-    PolicyRecord,
-    PolicyParams,
-  } from '@/api/company';
+
+  import { queryOrderList, OrderRecord, PolicyParams } from '@/api/order';
   import { Message } from '@arco-design/web-vue';
-  import FormModal from './components/form-modal.vue';
+  import router from '@/router';
 
   type SizeProps = 'mini' | 'small' | 'medium' | 'large';
 
   const generateFormModel = () => {
     return {
-      name: '',
+      order_no: '',
     };
   };
   const { loading, setLoading } = useLoading(true);
-  const renderData = ref<PolicyRecord[]>([]);
+  const renderData = ref<OrderRecord[]>([]);
   const formModel = ref(generateFormModel());
-
-  const modalVisble = ref(false);
-  const formData = ref<PolicyRecord>();
 
   const size = ref<SizeProps>('large');
 
@@ -142,30 +129,31 @@
       dataIndex: 'id',
     },
     {
-      title: '唯一标识',
-      dataIndex: 'key',
+      title: '订单号',
+      dataIndex: 'order_no',
+      slotName: 'order_no',
     },
     {
-      title: '企业名称',
-      dataIndex: 'name',
+      title: '总计',
+      dataIndex: 'total',
     },
     {
-      title: '联系人',
-      dataIndex: 'link_name',
+      title: '支付时间',
+      dataIndex: 'pay_at',
     },
     {
-      title: '联系电话',
-      dataIndex: 'link_phone',
+      title: '商品数量',
+      dataIndex: 'order_items_count',
     },
     {
       title: '状态',
       dataIndex: 'status',
       slotName: 'status',
     },
-    {
-      title: '创建时间',
-      dataIndex: 'created_at',
-    },
+    // {
+    //   title: '创建时间',
+    //   dataIndex: 'created_at',
+    // },
     {
       title: '操作',
       dataIndex: 'operations',
@@ -178,7 +166,7 @@
   ) => {
     setLoading(true);
     try {
-      const { data } = await queryPolicyList(params);
+      const { data } = await queryOrderList(params);
       renderData.value = data.data;
       pagination.page = data.current_page;
       pagination.total = data.total;
@@ -189,26 +177,17 @@
     }
   };
 
-  const handleEdit = (item: any) => {
-    formData.value = item;
-    modalVisble.value = true;
+  const handleView = (item: any) => {
+    router.push({
+      name: 'OrderDetail',
+      params: {
+        id: item.id,
+      },
+    });
   };
   const handledelete = async (item: any) => {
-    await deleteRecord(item.id);
+    // await deleteRecord(item.id);
     Message.success('删除成功');
-    fetchData();
-  };
-
-  const handleAdd = () => {
-    modalVisble.value = true;
-  };
-
-  const updateVisible = (visible: boolean) => {
-    modalVisble.value = visible;
-  };
-
-  const updateSuccess = () => {
-    modalVisble.value = false;
     fetchData();
   };
 

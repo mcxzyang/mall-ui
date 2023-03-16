@@ -62,6 +62,7 @@
         :data="renderData"
         :bordered="false"
         :pagination="false"
+        size="large"
       >
         <template #image="{ record }">
           <a-image
@@ -73,7 +74,7 @@
         </template>
         <template #operations="{ record }">
           <a-space>
-            <a-button type="outline" size="small" @click="handleEdit(record)">
+            <a-button type="text" size="mini" @click="handleEdit(record)">
               编辑
             </a-button>
             <a-popconfirm
@@ -81,7 +82,7 @@
               type="warning"
               @ok="handledelete(record)"
             >
-              <a-button type="outline" status="danger" size="small">
+              <a-button type="text" status="danger" size="mini">
                 删除
               </a-button>
             </a-popconfirm>
