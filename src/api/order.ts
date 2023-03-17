@@ -10,6 +10,11 @@ export interface AddressRecord {
   province: string;
 }
 
+export interface OrderUser {
+  name?: string;
+  nickname?: string;
+}
+
 export interface OrderRecord {
   id: number;
   order_no: string;
@@ -28,6 +33,7 @@ export interface OrderRecord {
   created_at?: string;
   address?: AddressRecord;
   order_items?: any;
+  user: OrderUser;
 }
 
 export interface PolicyParams extends Partial<OrderRecord> {
@@ -59,6 +65,14 @@ export function getRecord(id: number | string) {
   return axios.get<OrderRecord>(`/order/${id}`);
 }
 
+export function deleteRecord(id: number | string) {
+  return axios.delete(`/order/${id}`);
+}
+
 export function getStatusMapping() {
   return axios.get<any>(`/order/status/mapping`);
+}
+
+export function deliveryOrder(id: number | string, params: any) {
+  return axios.post<any>(`/order/${id}/delivery`, params);
 }

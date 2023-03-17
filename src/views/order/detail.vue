@@ -1,6 +1,23 @@
 <template>
   <div class="container">
     <Breadcrumb :items="['订单列表', '订单详情']" />
+    <a-card>
+      <div class="flex-between">
+        <router-link :to="{ name: 'OrderList' }">
+          <a-button type="outline">返回</a-button>
+        </router-link>
+        <a-space>
+          <a-button
+            v-if="orderData?.status === 1"
+            status="success"
+            @click="delivery()"
+          >
+            发货
+          </a-button>
+        </a-space>
+      </div>
+    </a-card>
+    <a-divider style="margin-top: 0" />
     <a-card class="general-card" title="订单信息">
       <a-row :gutter="80">
         <a-col :span="8">
@@ -88,28 +105,41 @@
         </template>
       </a-table>
     </a-card>
+    <DeliveryModule
+      :visible="modalVisble"
+      :order-id="orderId"
+      @update-visible="updateVisible"
+      @update-success="updateSuccess"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
   import { ref, onMounted } from 'vue';
-  import { useRouter, useRoute } from 'vue-router';
+  import { useRoute } from 'vue-router';
   import type { TableColumnData } from '@arco-design/web-vue/es/table/interface';
 
   import { OrderRecord, getRecord } from '@/api/order';
 
-  const router = useRouter();
+  import DeliveryModule from './components/delivery.vue';
+
+  // const router = useRouter();
   const route = useRoute();
 
   const orderId: any = route.params?.id;
 
-  const orderData = ref<OrderRecord>();
+  const orderData = ref<OrderRecord>({} as OrderRecord);
+  const modalVisble = ref(false);
 
-  onMounted(async () => {
+  const fetchData = async () => {
     if (orderId) {
       const { data } = await getRecord(orderId);
       orderData.value = data;
     }
+  };
+
+  onMounted(async () => {
+    fetchData();
   });
 
   const orderItemColumns = ref<TableColumnData[]>([
@@ -141,11 +171,17 @@
     },
   ]);
 
-  const deleteSku = (record: any) => {
-    // const index: any = formData.value.product_skus?.indexOf(record);
-    // if (index !== -1) {
-    //   formData.value.product_skus?.splice(index, 1);
-    // }
+  const updateVisible = (visible: boolean) => {
+    modalVisble.value = visible;
+  };
+
+  const updateSuccess = () => {
+    modalVisble.value = false;
+    fetchData();
+  };
+
+  const delivery = () => {
+    modalVisble.value = true;
   };
 </script>
 

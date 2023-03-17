@@ -93,12 +93,17 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, reactive, computed } from 'vue';
+  import { ref, reactive } from 'vue';
   import useLoading from '@/hooks/loading';
   import { Pagination } from '@/types/global';
   import type { TableColumnData } from '@arco-design/web-vue/es/table/interface';
 
-  import { queryOrderList, OrderRecord, PolicyParams } from '@/api/order';
+  import {
+    queryOrderList,
+    OrderRecord,
+    PolicyParams,
+    deleteRecord,
+  } from '@/api/order';
   import { Message } from '@arco-design/web-vue';
   import router from '@/router';
 
@@ -132,6 +137,10 @@
       title: '订单号',
       dataIndex: 'order_no',
       slotName: 'order_no',
+    },
+    {
+      title: '购买人',
+      dataIndex: 'user.name',
     },
     {
       title: '总计',
@@ -186,7 +195,7 @@
     });
   };
   const handledelete = async (item: any) => {
-    // await deleteRecord(item.id);
+    await deleteRecord(item.id);
     Message.success('删除成功');
     fetchData();
   };
