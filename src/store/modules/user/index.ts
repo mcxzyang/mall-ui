@@ -65,6 +65,9 @@ const useUserStore = defineStore('user', {
       try {
         const res = await userLogin(loginForm);
         setToken(res.data.access_token);
+        const userInfo = await getUserInfo();
+
+        this.setInfo(userInfo.data);
       } catch (err) {
         clearToken();
         throw err;

@@ -100,8 +100,10 @@
   provide('toggleDrawerMenu', () => {
     drawerVisible.value = !drawerVisible.value;
   });
-  onMounted(() => {
+  onMounted(async () => {
     isInit.value = true;
+
+    await userStore.info();
   });
 </script>
 

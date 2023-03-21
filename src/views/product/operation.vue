@@ -105,7 +105,11 @@
 
             <a-col :span="24">
               <a-form-item field="content" label="详细内容">
-                <Editor ref="editorRef" v-model="formData.content" />
+                <Editor
+                  ref="editorRef"
+                  v-model="formData.content"
+                  style="width: 480px"
+                />
               </a-form-item>
             </a-col>
           </a-row>
