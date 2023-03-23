@@ -1,19 +1,19 @@
 <template>
   <div class="container">
-    <Breadcrumb :items="['商城管理', '商城列表']" />
-    <a-card class="general-card" title="商城列表">
+    <Breadcrumb :items="['经销商管理', '经销商列表']" />
+    <a-card class="general-card" title="经销商列表">
       <a-row>
         <a-col :flex="1">
           <a-form
             :model="formModel"
-            :label-col-props="{ span: 6 }"
-            :wrapper-col-props="{ span: 18 }"
+            :label-col-props="{ span: 8 }"
+            :wrapper-col-props="{ span: 16 }"
             label-align="left"
           >
             <a-row :gutter="16">
               <a-col :span="8">
-                <a-form-item field="name" label="商城名称">
-                  <a-input v-model="formModel.name" placeholder="商城名称" />
+                <a-form-item field="name" label="经销商名称">
+                  <a-input v-model="formModel.name" placeholder="经销商名称" />
                 </a-form-item>
               </a-col>
             </a-row>
@@ -108,7 +108,7 @@
     deleteRecord,
     PolicyRecord,
     PolicyParams,
-  } from '@/api/company';
+  } from '@/api/vendor';
   import { Message } from '@arco-design/web-vue';
   import FormModal from './components/form-modal.vue';
 
@@ -142,11 +142,7 @@
       dataIndex: 'id',
     },
     {
-      title: '唯一标识',
-      dataIndex: 'key',
-    },
-    {
-      title: '商城名称',
+      title: '经销商名称',
       dataIndex: 'name',
     },
     {

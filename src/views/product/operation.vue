@@ -40,7 +40,7 @@
             </a-col>
 
             <a-col :span="12">
-              <a-form-item field="multiSelect" label="请选择需要发布的企业">
+              <a-form-item field="multiSelect" label="请选择需要发布的商城">
                 <a-select v-model="formData.companies" multiple>
                   <a-option
                     v-for="(item, key) in companyList"
@@ -81,8 +81,15 @@
               </a-form-item>
             </a-col>
             <a-col :span="12">
-              <a-form-item field="provider" label="供应商">
-                <a-input v-model="formData.provider"> </a-input>
+              <a-form-item field="vendor_id" label="供应商">
+                <a-select v-model="formData.vendor_id">
+                  <a-option
+                    v-for="(item, key) in vendorList"
+                    :key="key"
+                    :value="item.id"
+                    >{{ item.name }}</a-option
+                  >
+                </a-select>
               </a-form-item>
             </a-col>
             <a-col :span="12">
@@ -179,6 +186,10 @@
   import Uploader from '@/components/uploader/index.vue';
 
   import { queryPolicyList, PolicyRecord } from '@/api/company';
+  import {
+    queryPolicyList as getVendorList,
+    PolicyRecord as vendorRecord,
+  } from '@/api/vendor';
   import {
     PolicyRecord as ProductGroupPolicy,
     queryPolicyList as queryProductGroupList,
@@ -289,6 +300,13 @@
     companyList.value = data;
   };
   fetchCompanyList();
+
+  const vendorList = ref<vendorRecord[]>([]);
+  const fetchVendorList = async () => {
+    const { data } = await getVendorList({ paging: 0 });
+    vendorList.value = data;
+  };
+  fetchVendorList();
 
   const productGroupList = ref<ProductGroupPolicy[]>([]);
   const fetchProductGroupList = async () => {

@@ -11,30 +11,35 @@
         <a-row>
           <a-col :span="24">
             <a-form-item
-              label="商城名称"
+              label="经销商名称"
               field="name"
-              :rules="[{ required: true, message: '请填写商城名称' }]"
+              :rules="[{ required: true, message: '请填写经销商名称' }]"
             >
               <a-input v-model="modalData.name"></a-input>
             </a-form-item>
           </a-col>
           <a-col :span="24">
-            <a-form-item label="联系人" field="pid">
+            <a-form-item label="联系人" field="link_name">
               <a-input v-model="modalData.link_name"></a-input>
             </a-form-item>
           </a-col>
           <a-col :span="24">
-            <a-form-item label="联系电话" field="pid">
+            <a-form-item label="联系电话" field="link_phone">
               <a-input v-model="modalData.link_phone"></a-input>
             </a-form-item>
           </a-col>
           <a-col :span="24">
-            <a-form-item label="Client ID" field="pid">
+            <a-form-item label="微信号" field="wechat_no">
+              <a-input v-model="modalData.wechat_no"></a-input>
+            </a-form-item>
+          </a-col>
+          <a-col v-if="modalData.id" :span="24">
+            <a-form-item label="Client ID" field="client_id">
               <a-input v-model="modalData.client_id"></a-input>
             </a-form-item>
           </a-col>
-          <a-col :span="24">
-            <a-form-item label="Client Secret" field="pid">
+          <a-col v-if="modalData.id" :span="24">
+            <a-form-item label="Client Secret" field="client_secret">
               <a-input v-model="modalData.client_secret"></a-input>
             </a-form-item>
           </a-col>
@@ -47,7 +52,7 @@
 <script setup lang="ts">
   import { ref, watch } from 'vue';
 
-  import { addRecord, saveRecord } from '@/api/company';
+  import { addRecord, saveRecord } from '@/api/vendor';
   import { Message } from '@arco-design/web-vue';
   import { cloneDeep } from 'lodash';
 
@@ -79,6 +84,7 @@
       name: '',
       link_phone: '',
       link_name: '',
+      wechat_no: '',
       client_id: '',
       client_secret: '',
     };

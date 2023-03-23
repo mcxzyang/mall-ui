@@ -21,6 +21,7 @@ export interface PolicyRecord {
   product_group_id?: number | string;
   category_id?: number | string;
   provider?: string;
+  vendor_id?: string | number;
   is_free_post?: 1;
   status?: number;
   product_skus?: ProductSku[];
