@@ -1,7 +1,7 @@
 <template>
   <div class="container">
-    <Breadcrumb :items="['经销商管理', '经销商列表']" />
-    <a-card class="general-card" title="经销商列表">
+    <Breadcrumb :items="['供应商管理', '供应商列表']" />
+    <a-card class="general-card" title="供应商列表">
       <a-row>
         <a-col :flex="1">
           <a-form
@@ -12,8 +12,8 @@
           >
             <a-row :gutter="16">
               <a-col :span="8">
-                <a-form-item field="name" label="经销商名称">
-                  <a-input v-model="formModel.name" placeholder="经销商名称" />
+                <a-form-item field="name" label="供应商名称">
+                  <a-input v-model="formModel.name" placeholder="供应商名称" />
                 </a-form-item>
               </a-col>
             </a-row>
@@ -142,7 +142,7 @@
       dataIndex: 'id',
     },
     {
-      title: '经销商名称',
+      title: '供应商名称',
       dataIndex: 'name',
     },
     {

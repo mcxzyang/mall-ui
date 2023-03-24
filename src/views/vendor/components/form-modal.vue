@@ -11,9 +11,9 @@
         <a-row>
           <a-col :span="24">
             <a-form-item
-              label="经销商名称"
+              label="供应商名称"
               field="name"
-              :rules="[{ required: true, message: '请填写经销商名称' }]"
+              :rules="[{ required: true, message: '请填写供应商名称' }]"
             >
               <a-input v-model="modalData.name"></a-input>
             </a-form-item>
