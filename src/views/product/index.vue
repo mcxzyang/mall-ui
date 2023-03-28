@@ -11,15 +11,47 @@
             label-align="left"
           >
             <a-row :gutter="16">
-              <a-col :span="8">
-                <a-form-item field="name" label="商品名称">
-                  <a-input v-model="formModel.name" placeholder="商品名称" />
+              <a-col :span="12">
+                <a-form-item field="title" label="商品名称">
+                  <a-input v-model="formModel.title" placeholder="商品名称" />
+                </a-form-item>
+              </a-col>
+              <a-col :span="12">
+                <a-form-item field="product_number" label="商品编号">
+                  <a-input
+                    v-model="formModel.product_number"
+                    placeholder="商品编号"
+                  />
+                </a-form-item>
+              </a-col>
+              <a-col :span="12">
+                <a-form-item field="vendor_id" label="供应商">
+                  <a-select v-model="formModel.vendor_id" :allow-clear="true">
+                    <a-option
+                      v-for="(item, key) in vendorList"
+                      :key="key"
+                      :value="item.id"
+                      >{{ item.name }}</a-option
+                    >
+                  </a-select>
+                </a-form-item>
+              </a-col>
+              <a-col :span="12">
+                <a-form-item field="company_id" label="商城">
+                  <a-select v-model="formModel.companies" multiple>
+                    <a-option
+                      v-for="(item, key) in companyList"
+                      :key="key"
+                      :value="item.id"
+                      >{{ item.name }}</a-option
+                    >
+                  </a-select>
                 </a-form-item>
               </a-col>
             </a-row>
           </a-form>
         </a-col>
-        <a-divider style="height: 40px" direction="vertical" />
+        <a-divider style="height: 80px" direction="vertical" />
         <a-col :flex="'86px'" style="text-align: right">
           <a-space :size="18">
             <a-button type="primary" @click="search">
@@ -134,11 +166,24 @@
   import { Message } from '@arco-design/web-vue';
   import router from '@/router';
 
+  import {
+    queryPolicyList as getVendorList,
+    PolicyRecord as vendorRecord,
+  } from '@/api/vendor';
+
+  import {
+    queryPolicyList as queryCompanyList,
+    PolicyRecord as CompanyRecord,
+  } from '@/api/company';
+
   type SizeProps = 'mini' | 'small' | 'medium' | 'large';
 
   const generateFormModel = () => {
     return {
-      name: '',
+      title: '',
+      product_number: '',
+      vendor_id: '',
+      companies: [],
     };
   };
   const { loading, setLoading } = useLoading(true);
@@ -154,6 +199,20 @@
   const pagination = reactive({
     ...basePagination,
   });
+
+  const vendorList = ref<vendorRecord[]>([]);
+  const fetchVendorList = async () => {
+    const { data } = await getVendorList({ paging: 0 });
+    vendorList.value = data;
+  };
+  fetchVendorList();
+
+  const companyList = ref<CompanyRecord[]>([]);
+  const fetchCompanyList = async () => {
+    const { data } = await queryCompanyList({ paging: 0 });
+    companyList.value = data;
+  };
+  fetchCompanyList();
 
   const columnsList = ref<TableColumnData[]>([
     {
