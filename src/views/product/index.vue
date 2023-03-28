@@ -17,10 +17,10 @@
                 </a-form-item>
               </a-col>
               <a-col :span="12">
-                <a-form-item field="product_number" label="商品编号">
+                <a-form-item field="product_number" label="商品编码">
                   <a-input
                     v-model="formModel.product_number"
-                    placeholder="商品编号"
+                    placeholder="商品编码"
                   />
                 </a-form-item>
               </a-col>
