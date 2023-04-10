@@ -10,6 +10,11 @@
       <a-form ref="modalFormRef" :model="modalData">
         <a-row>
           <a-col :span="24">
+            <a-form-item label="商品名称">
+              {{ props.orderItem?.product_sku?.product?.title }}
+            </a-form-item>
+          </a-col>
+          <a-col :span="24">
             <a-form-item
               label="快递公司"
               field="express_company_name"
@@ -35,7 +40,7 @@
 
 <script setup lang="ts">
   import { ref, watch } from 'vue';
-  import { deliveryOrder } from '@/api/order';
+  import { deliveryOrderItem } from '@/api/order';
   import { Message } from '@arco-design/web-vue';
 
   const props = defineProps({
@@ -45,6 +50,10 @@
     },
     orderId: {
       type: [Number, String],
+      default: () => null,
+    },
+    orderItem: {
+      type: Object,
       default: () => null,
     },
   });
@@ -81,7 +90,7 @@
       validateRef.validate().then(async (res: any) => {
         if (!res) {
           try {
-            await deliveryOrder(props.orderId, modalData.value);
+            await deliveryOrderItem(props.orderItem?.id, modalData.value);
 
             done(true);
             modalData.value = generateForm();

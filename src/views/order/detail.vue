@@ -7,13 +7,9 @@
           <a-button type="outline">返回</a-button>
         </router-link>
         <a-space>
-          <a-button
-            v-if="orderData?.status === 1"
-            status="success"
-            @click="delivery()"
-          >
+          <!-- <a-button v-if="orderData?.status === 2" status="success">
             发货
-          </a-button>
+          </a-button> -->
         </a-space>
       </div>
     </a-card>
@@ -103,10 +99,23 @@
             :src="record.product_sku.product.image"
           />
         </template>
+        <template #operate="{ record }">
+          <a-space>
+            <a-button
+              v-if="record.status === 2"
+              type="text"
+              size="mini"
+              @click="delivery(record)"
+            >
+              发货
+            </a-button>
+          </a-space>
+        </template>
       </a-table>
     </a-card>
     <DeliveryModule
       :visible="modalVisble"
+      :order-item="orderItem"
       :order-id="orderId"
       @update-visible="updateVisible"
       @update-success="updateSuccess"
@@ -130,6 +139,7 @@
 
   const orderData = ref<OrderRecord>({} as OrderRecord);
   const modalVisble = ref(false);
+  let orderItem = {};
 
   const fetchData = async () => {
     if (orderId) {
@@ -169,6 +179,14 @@
       dataIndex: 'total',
       slotName: 'total',
     },
+    {
+      title: '状态',
+      dataIndex: 'status_text',
+    },
+    {
+      title: '操作',
+      slotName: 'operate',
+    },
   ]);
 
   const updateVisible = (visible: boolean) => {
@@ -180,7 +198,8 @@
     fetchData();
   };
 
-  const delivery = () => {
+  const delivery = (record: any) => {
+    orderItem = record;
     modalVisble.value = true;
   };
 </script>

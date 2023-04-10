@@ -73,6 +73,6 @@ export function getStatusMapping() {
   return axios.get<any>(`/order/status/mapping`);
 }
 
-export function deliveryOrder(id: number | string, params: any) {
-  return axios.post<any>(`/order/${id}/delivery`, params);
+export function deliveryOrderItem(id: number | string, params: any) {
+  return axios.post<any>(`/orderItem/${id}/delivery`, params);
 }
