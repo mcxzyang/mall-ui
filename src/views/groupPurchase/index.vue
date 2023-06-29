@@ -1,7 +1,7 @@
 <template>
   <div class="container">
-    <Breadcrumb :items="['商品管理', '商品列表']" />
-    <a-card class="general-card" title="商品列表">
+    <Breadcrumb :items="['团购管理', '团购列表']" />
+    <a-card class="general-card" title="团购列表">
       <a-row>
         <a-col :flex="1">
           <a-form
@@ -11,31 +11,6 @@
             label-align="left"
           >
             <a-row :gutter="16">
-              <a-col :span="12">
-                <a-form-item field="title" label="商品名称">
-                  <a-input v-model="formModel.title" placeholder="商品名称" />
-                </a-form-item>
-              </a-col>
-              <a-col :span="12">
-                <a-form-item field="product_number" label="商品编码">
-                  <a-input
-                    v-model="formModel.product_number"
-                    placeholder="商品编码"
-                  />
-                </a-form-item>
-              </a-col>
-              <a-col :span="12">
-                <a-form-item field="vendor_id" label="供应商">
-                  <a-select v-model="formModel.vendor_id" :allow-clear="true">
-                    <a-option
-                      v-for="(item, key) in vendorList"
-                      :key="key"
-                      :value="item.id"
-                      >{{ item.name }}</a-option
-                    >
-                  </a-select>
-                </a-form-item>
-              </a-col>
               <a-col :span="12">
                 <a-form-item field="company_id" label="商城">
                   <a-select v-model="formModel.companies" multiple>
@@ -51,7 +26,7 @@
             </a-row>
           </a-form>
         </a-col>
-        <a-divider style="height: 80px" direction="vertical" />
+        <a-divider style="height: 40px" direction="vertical" />
         <a-col :flex="'86px'" style="text-align: right">
           <a-space :size="18">
             <a-button type="primary" @click="search">
@@ -73,14 +48,12 @@
       <a-row style="margin-bottom: 16px">
         <a-col :span="12">
           <a-space>
-            <router-link :to="{ name: 'ProductOperation' }">
-              <a-button type="primary">
-                <template #icon>
-                  <icon-plus />
-                </template>
-                新增
-              </a-button>
-            </router-link>
+            <a-button type="primary" @click="handleAdd">
+              <template #icon>
+                <icon-plus />
+              </template>
+              新增
+            </a-button>
           </a-space>
         </a-col>
         <a-col
@@ -99,35 +72,10 @@
         :size="size"
         @page-change="onPageChange"
       >
-        <template #stock="{ record }">
-          <span v-if="record.first_sku.stock > 0">{{
-            record.first_sku.stock
-          }}</span>
-          <span v-else>无限制</span>
-        </template>
-        <template #image="{ record }">
-          <a-image
-            v-if="record.image"
-            fit="fill"
-            width="100"
-            :style="{ cursor: 'pointer' }"
-            :src="record.image"
-          />
-        </template>
         <template #status="{ record }">
-          <a-switch
-            v-model="record.status"
-            :checked-value="1"
-            :unchecked-value="0"
-            @change="changeStatus($event, record)"
-          >
-            <template #checked> 是 </template>
-            <template #unchecked> 否 </template>
-          </a-switch>
-
-          <!-- <span v-if="record.status === 1" class="circle"></span>
+          <span v-if="record.status === 1" class="circle"></span>
           <span v-else class="circle pass"></span>
-          {{ record.status === 1 ? '正常' : '已禁用' }} -->
+          {{ record.status === 1 ? '未成团' : '已成团' }}
         </template>
         <template #operations="{ record }">
           <a-space>
@@ -147,6 +95,12 @@
         </template>
       </a-table>
     </a-card>
+    <FormModal
+      :visible="modalVisble"
+      :form-data="formData"
+      @update-visible="updateVisible"
+      @update-success="updateSuccess"
+    />
   </div>
 </template>
 
@@ -161,34 +115,29 @@
     deleteRecord,
     PolicyRecord,
     PolicyParams,
-    saveRecord,
-  } from '@/api/product';
+    // saveRecord,
+  } from '@/api/groupPurchase';
   import { Message } from '@arco-design/web-vue';
-  import router from '@/router';
-
-  import {
-    queryPolicyList as getVendorList,
-    PolicyRecord as vendorRecord,
-  } from '@/api/vendor';
 
   import {
     queryPolicyList as queryCompanyList,
     PolicyRecord as CompanyRecord,
   } from '@/api/company';
+  import FormModal from './components/form-modal.vue';
 
   type SizeProps = 'mini' | 'small' | 'medium' | 'large';
 
   const generateFormModel = () => {
     return {
-      title: '',
-      product_number: '',
-      vendor_id: '',
       companies: [],
     };
   };
   const { loading, setLoading } = useLoading(true);
   const renderData = ref<PolicyRecord[]>([]);
   const formModel = ref(generateFormModel());
+
+  const formData = ref<any>();
+  const modalVisble = ref(false);
 
   const size = ref<SizeProps>('large');
 
@@ -200,13 +149,6 @@
     ...basePagination,
   });
 
-  const vendorList = ref<vendorRecord[]>([]);
-  const fetchVendorList = async () => {
-    const { data } = await getVendorList({ paging: 0 });
-    vendorList.value = data;
-  };
-  fetchVendorList();
-
   const companyList = ref<CompanyRecord[]>([]);
   const fetchCompanyList = async () => {
     const { data } = await queryCompanyList({ paging: 0 });
@@ -215,45 +157,36 @@
   fetchCompanyList();
 
   const columnsList = ref<TableColumnData[]>([
-    {
-      title: '主图',
-      dataIndex: 'image',
-      slotName: 'image',
-    },
+    // {
+    //   title: '商品主图',
+    //   dataIndex: 'product.image',
+    //   slotName: 'image',
+    // },
     {
       title: 'ID',
       dataIndex: 'id',
     },
     {
       title: '商品名称',
-      dataIndex: 'title',
-    },
-    {
-      title: '商品编码',
-      dataIndex: 'product_number',
+      dataIndex: 'product.title',
     },
     {
       title: '售价（元）',
-      dataIndex: 'first_sku.sale_price',
+      dataIndex: 'product.first_sku.sale_price',
     },
     {
-      title: '库存',
-      dataIndex: 'first_sku.stock',
-      slotName: 'stock',
+      title: '团购价（元）',
+      dataIndex: 'price',
     },
     {
-      title: '销量',
-      dataIndex: 'sales_number',
+      title: '成团人数',
+      dataIndex: 'number_count',
     },
     {
-      title: '上架状态',
+      title: '状态',
       dataIndex: 'status',
       slotName: 'status',
     },
-    // {
-    //   title: '创建时间',
-    //   dataIndex: 'created_at',
-    // },
     {
       title: '操作',
       dataIndex: 'operations',
@@ -277,14 +210,25 @@
     }
   };
 
-  const handleEdit = (item: any) => {
-    router.push({
-      name: 'ProductOperation',
-      params: {
-        id: item.id,
-      },
-    });
+  const handleAdd = () => {
+    formData.value = {};
+    modalVisble.value = true;
   };
+
+  const handleEdit = (item: any) => {
+    formData.value = item;
+    modalVisble.value = true;
+  };
+
+  const updateVisible = (visible: boolean) => {
+    modalVisble.value = visible;
+  };
+
+  const updateSuccess = () => {
+    modalVisble.value = false;
+    fetchData();
+  };
+
   const handledelete = async (item: any) => {
     await deleteRecord(item.id);
     Message.success('删除成功');
@@ -306,9 +250,9 @@
     formModel.value = generateFormModel();
   };
 
-  const changeStatus = async (value: any, record: PolicyRecord) => {
-    await saveRecord(record.id, record);
-    Message.success('操作成功');
-    fetchData();
-  };
+  // const changeStatus = async (value: any, record: PolicyRecord) => {
+  //   await saveRecord(record.id, record);
+  //   Message.success('操作成功');
+  //   fetchData();
+  // };
 </script>

@@ -33,6 +33,7 @@ export interface PolicyRecord {
 export interface PolicyParams extends Partial<PolicyRecord> {
   page: number;
   pageSize: number;
+  paging?: number;
 }
 
 export interface PaginationLaravel {
@@ -46,12 +47,18 @@ export interface PolicyListRes {
   total: number;
 }
 
-export function queryPolicyList(params: PolicyParams) {
-  return axios.get<PolicyListRes>('/product', {
+export function queryPolicyList(params: PolicyParams | any) {
+  return axios.get<PolicyListRes | any>('/product', {
     params,
     // paramsSerializer: (obj) => {
     //   return qs.stringify(obj);
     // },
+  });
+}
+
+export function queryPolicyListSearch(params: PolicyParams | any) {
+  return axios.get<any>('/product/for/search', {
+    params,
   });
 }
 

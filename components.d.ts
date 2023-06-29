@@ -17,6 +17,7 @@ declare module '@vue/runtime-core' {
     ACheckbox: typeof import('@arco-design/web-vue')['Checkbox']
     ACol: typeof import('@arco-design/web-vue')['Col']
     AConfigProvider: typeof import('@arco-design/web-vue')['ConfigProvider']
+    ADatePicker: typeof import('@arco-design/web-vue')['DatePicker']
     ADivider: typeof import('@arco-design/web-vue')['Divider']
     ADoption: typeof import('@arco-design/web-vue')['Doption']
     ADrawer: typeof import('@arco-design/web-vue')['Drawer']

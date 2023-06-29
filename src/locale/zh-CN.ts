@@ -35,6 +35,8 @@ export default {
   'menu.order.detail': '订单详情',
   'menu.vendor': '供应商管理',
   'menu.vendor.list': '供应商列表',
+  'menu.groupPurchase': '团购管理',
+  'menu.groupPurchase.list': '团购列表',
   ...localeSettings,
   ...localeMessageBox,
   ...localeLogin,
