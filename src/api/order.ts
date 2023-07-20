@@ -30,6 +30,10 @@ export interface OrderRecord {
   status?: number;
   status_text?: string;
   status_color?: string;
+  source_text?: string;
+  source_color?: string;
+  pay_type_text?: string;
+  pay_type_color?: string;
   created_at?: string;
   address?: AddressRecord;
   order_items?: any;

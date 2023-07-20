@@ -64,6 +64,14 @@
             :src="record.image"
           />
         </template>
+        <template #pay_type="{ record }">
+          <a-tag v-if="record.pay_type_text" :color="record.pay_type_color">{{
+            record.pay_type_text
+          }}</a-tag>
+        </template>
+        <template #source="{ record }">
+          <a-tag :color="record.source_color">{{ record.source_text }}</a-tag>
+        </template>
         <template #status="{ record }">
           <a-tag :color="record.status_color">{{ record.status_text }}</a-tag>
 
@@ -139,8 +147,18 @@
       slotName: 'order_no',
     },
     {
+      title: '来源',
+      dataIndex: 'source',
+      slotName: 'source',
+    },
+    {
       title: '购买人',
-      dataIndex: 'user.name',
+      dataIndex: 'user.nickname',
+    },
+    {
+      title: '支付方式',
+      dataIndex: 'pay_type',
+      slotName: 'pay_type',
     },
     {
       title: '总计',
