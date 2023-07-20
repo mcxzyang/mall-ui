@@ -20,18 +20,8 @@
           <a-form-item label="订单号"> {{ orderData?.order_no }} </a-form-item>
         </a-col>
         <a-col :span="8">
-          <a-form-item label="支付单号">
-            {{ orderData?.trade_order_no }}
-          </a-form-item>
-        </a-col>
-        <a-col :span="8">
           <a-form-item label="创建时间">
             {{ orderData?.created_at }}
-          </a-form-item>
-        </a-col>
-        <a-col :span="8">
-          <a-form-item label="支付时间">
-            {{ orderData?.pay_at }}
           </a-form-item>
         </a-col>
         <a-col :span="8">
@@ -40,10 +30,41 @@
           </a-form-item>
         </a-col>
         <a-col :span="8">
+          <a-form-item label="订单来源">
+            <a-tag :color="orderData?.source_color">{{
+              orderData?.source_text
+            }}</a-tag>
+          </a-form-item>
+        </a-col>
+        <a-col :span="8">
           <a-form-item label="订单状态">
             <a-tag :color="orderData?.status_color">{{
               orderData?.status_text
             }}</a-tag>
+          </a-form-item>
+        </a-col>
+      </a-row>
+    </a-card>
+    <a-divider style="margin-top: 0" />
+    <a-card class="general-card" title="支付信息">
+      <a-row :gutter="80">
+        <a-col :span="8">
+          <a-form-item label="支付单号">
+            {{ orderData?.trade_order_no }}
+          </a-form-item>
+        </a-col>
+        <a-col :span="8">
+          <a-form-item label="支付方式">
+            <a-tag
+              v-if="orderData?.pay_type_text"
+              :color="orderData?.pay_type_color"
+              >{{ orderData?.pay_type_text }}</a-tag
+            >
+          </a-form-item>
+        </a-col>
+        <a-col :span="8">
+          <a-form-item label="支付时间">
+            {{ orderData?.pay_at }}
           </a-form-item>
         </a-col>
       </a-row>
