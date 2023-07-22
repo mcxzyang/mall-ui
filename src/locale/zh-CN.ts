@@ -32,6 +32,8 @@ export default {
   'menu.company.list': '商城列表',
   'menu.order': '订单管理',
   'menu.order.list': '订单列表',
+  'menu.orderAfterSale.list': '售后订单列表',
+  'menu.orderAfterSale.detail': '售后订单详情',
   'menu.order.detail': '订单详情',
   'menu.vendor': '供应商管理',
   'menu.vendor.list': '供应商列表',

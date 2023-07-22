@@ -77,3 +77,7 @@ export function addRecord(params: any) {
 export function deleteRecord(id: number) {
   return axios.delete(`/product/${id}`);
 }
+
+export function getSkuList(productId: number) {
+  return axios.get<any>(`/product/${productId}/skuList`);
+}

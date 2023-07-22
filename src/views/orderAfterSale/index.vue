@@ -1,7 +1,7 @@
 <template>
   <div class="container">
-    <Breadcrumb :items="['团购管理', '团购列表']" />
-    <a-card class="general-card" title="团购列表">
+    <Breadcrumb :items="['售后订单管理', '售后订单列表']" />
+    <a-card class="general-card" title="售后订单列表">
       <a-row>
         <a-col :flex="1">
           <a-form
@@ -11,16 +11,9 @@
             label-align="left"
           >
             <a-row :gutter="16">
-              <a-col :span="12">
-                <a-form-item field="company_id" label="商城">
-                  <a-select v-model="formModel.companies" multiple>
-                    <a-option
-                      v-for="(item, key) in companyList"
-                      :key="key"
-                      :value="item.id"
-                      >{{ item.name }}</a-option
-                    >
-                  </a-select>
+              <a-col :span="8">
+                <a-form-item field="name" label="售后订单号">
+                  <a-input v-model="formModel.no" placeholder="售后订单号" />
                 </a-form-item>
               </a-col>
             </a-row>
@@ -45,23 +38,7 @@
         </a-col>
       </a-row>
       <a-divider style="margin-top: 0" />
-      <a-row style="margin-bottom: 16px">
-        <a-col :span="12">
-          <a-space>
-            <a-button type="primary" @click="handleAdd">
-              <template #icon>
-                <icon-plus />
-              </template>
-              新增
-            </a-button>
-          </a-space>
-        </a-col>
-        <a-col
-          :span="12"
-          style="display: flex; align-items: center; justify-content: end"
-        >
-        </a-col>
-      </a-row>
+
       <a-table
         row-key="id"
         :loading="loading"
@@ -72,15 +49,10 @@
         :size="size"
         @page-change="onPageChange"
       >
-        <template #status="{ record }">
-          <span v-if="record.status === 1" class="circle"></span>
-          <span v-else class="circle pass"></span>
-          {{ record.status === 1 ? '未成团' : '已成团' }}
-        </template>
         <template #operations="{ record }">
           <a-space>
-            <a-button type="text" size="mini" @click="handleEdit(record)">
-              编辑
+            <a-button type="text" size="mini" @click="handleView(record)">
+              查看
             </a-button>
             <a-popconfirm
               content="确定删除此条记录吗?"
@@ -95,12 +67,6 @@
         </template>
       </a-table>
     </a-card>
-    <FormModal
-      :visible="modalVisble"
-      :form-data="formData"
-      @update-visible="updateVisible"
-      @update-success="updateSuccess"
-    />
   </div>
 </template>
 
@@ -111,33 +77,24 @@
   import type { TableColumnData } from '@arco-design/web-vue/es/table/interface';
 
   import {
-    queryPolicyList,
-    deleteRecord,
-    PolicyRecord,
+    queryOrderAfterSaleList,
+    OrderAfterSaleRecord,
     PolicyParams,
-    // saveRecord,
-  } from '@/api/groupPurchase';
+    deleteRecord,
+  } from '@/api/orderAfterSale';
   import { Message } from '@arco-design/web-vue';
-
-  import {
-    queryPolicyList as queryCompanyList,
-    PolicyRecord as CompanyRecord,
-  } from '@/api/company';
-  import FormModal from './components/form-modal.vue';
+  import router from '@/router';
 
   type SizeProps = 'mini' | 'small' | 'medium' | 'large';
 
   const generateFormModel = () => {
     return {
-      companies: [],
+      no: '',
     };
   };
   const { loading, setLoading } = useLoading(true);
-  const renderData = ref<PolicyRecord[]>([]);
+  const renderData = ref<OrderAfterSaleRecord[]>([]);
   const formModel = ref(generateFormModel());
-
-  const formData = ref<any>();
-  const modalVisble = ref(false);
 
   const size = ref<SizeProps>('large');
 
@@ -149,43 +106,39 @@
     ...basePagination,
   });
 
-  const companyList = ref<CompanyRecord[]>([]);
-  const fetchCompanyList = async () => {
-    const { data } = await queryCompanyList({ paging: 0 });
-    companyList.value = data;
-  };
-  fetchCompanyList();
-
   const columnsList = ref<TableColumnData[]>([
-    // {
-    //   title: '商品主图',
-    //   dataIndex: 'product.image',
-    //   slotName: 'image',
-    // },
     {
       title: 'ID',
       dataIndex: 'id',
     },
     {
-      title: '商品名称',
-      dataIndex: 'product.title',
+      title: '售后订单号',
+      dataIndex: 'no',
+      slotName: 'no',
+    },
+    // {
+    //   title: '订单号',
+    //   dataIndex: 'order.order_no',
+    // },
+    {
+      title: '发起人',
+      dataIndex: 'user.nickname',
     },
     {
-      title: '售价（元）',
-      dataIndex: 'product.first_sku.sale_price',
+      title: '售后类型',
+      dataIndex: 'type_text',
     },
     {
-      title: '团购价（元）',
+      title: '退款金额',
       dataIndex: 'price',
     },
     {
-      title: '成团人数',
-      dataIndex: 'number_count',
+      title: '售后状态',
+      dataIndex: 'after_status_text',
     },
     {
-      title: '状态',
-      dataIndex: 'status',
-      slotName: 'status',
+      title: '发起时间',
+      dataIndex: 'created_at',
     },
     {
       title: '操作',
@@ -199,7 +152,7 @@
   ) => {
     setLoading(true);
     try {
-      const { data } = await queryPolicyList(params);
+      const { data } = await queryOrderAfterSaleList(params);
       renderData.value = data.data;
       pagination.page = data.current_page;
       pagination.total = data.total;
@@ -210,26 +163,14 @@
     }
   };
 
-  const handleAdd = () => {
-    formData.value = {};
-    modalVisble.value = true;
+  const handleView = (item: any) => {
+    router.push({
+      name: 'OrderAfterSaleDetail',
+      params: {
+        id: item.id,
+      },
+    });
   };
-
-  const handleEdit = (item: any) => {
-    formData.value = item;
-    modalVisble.value = true;
-  };
-
-  const updateVisible = (visible: boolean) => {
-    modalVisble.value = visible;
-    formData.value = {};
-  };
-
-  const updateSuccess = () => {
-    modalVisble.value = false;
-    fetchData();
-  };
-
   const handledelete = async (item: any) => {
     await deleteRecord(item.id);
     Message.success('删除成功');
@@ -243,17 +184,11 @@
     } as unknown as PolicyParams);
   };
   const onPageChange = (page: number) => {
-    fetchData({ ...basePagination, ...formModel.value, page });
+    fetchData({ ...basePagination, page });
   };
 
   fetchData();
   const reset = () => {
     formModel.value = generateFormModel();
   };
-
-  // const changeStatus = async (value: any, record: PolicyRecord) => {
-  //   await saveRecord(record.id, record);
-  //   Message.success('操作成功');
-  //   fetchData();
-  // };
 </script>

@@ -31,7 +31,20 @@
                 :show-extra-options="false"
                 allow-search
                 @search="productSearch"
+                @change="getSkus"
               >
+              </a-select>
+            </a-form-item>
+          </a-col>
+          <a-col :span="24">
+            <a-form-item label="商品SKU" field="product_sku_id">
+              <a-select v-model="modalData.product_sku_id">
+                <a-option
+                  v-for="(item, key) in skuList"
+                  :key="key"
+                  :value="item.id"
+                  >{{ item.sku_name }}</a-option
+                >
               </a-select>
             </a-form-item>
           </a-col>
@@ -76,6 +89,7 @@
     queryPolicyListSearch as getProductList,
     // PolicyRecord as ProductRecord,
     getRecord as getProduct,
+    getSkuList,
   } from '@/api/product';
 
   const props = defineProps({
@@ -104,6 +118,7 @@
     return {
       id: 0,
       product_id: '',
+      product_sku_id: '',
       number_count: 0,
       start_at: '',
       end_at: '',
@@ -131,6 +146,8 @@
   const productOptions = ref<any[]>([]);
   const productLoading = ref(false);
 
+  const skuList = ref<any>([]);
+
   const productSearch = async (keyword: string) => {
     if (keyword) {
       productLoading.value = true;
@@ -144,6 +161,11 @@
     }
   };
 
+  const getSkus = async (product_id: any) => {
+    const { data } = await getSkuList(product_id);
+    skuList.value = data;
+  };
+
   watch(
     () => props.formData,
     async (value) => {
@@ -152,6 +174,8 @@
         if (value.product_id) {
           const { data: product } = await getProduct(value.product_id);
           productOptions.value = [{ value: product.id, label: product.title }];
+
+          getSkus(value.product_id);
         }
       }
     },
