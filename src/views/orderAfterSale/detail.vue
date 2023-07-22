@@ -45,9 +45,9 @@
         <a-col :span="8">
           <a-form-item label="支付方式">
             <a-tag
-              v-if="orderAfterSaleData?.orderData?.pay_type_text"
-              :color="orderAfterSaleData?.orderData?.pay_type_color"
-              >{{ orderAfterSaleData?.orderData?.pay_type_text }}</a-tag
+              v-if="orderAfterSaleData?.order?.pay_type_text"
+              :color="orderAfterSaleData?.order?.pay_type_color"
+              >{{ orderAfterSaleData?.order?.pay_type_text }}</a-tag
             >
           </a-form-item>
         </a-col>

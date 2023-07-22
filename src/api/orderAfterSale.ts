@@ -30,6 +30,7 @@ export interface OrderAfterSaleRecord {
   created_at?: string;
   updated_at?: string;
   order_items?: any;
+  order_after_sale_items?: any;
   user: OrderAfterSaleUser;
 }
 
@@ -44,7 +45,7 @@ export interface PaginationLaravel {
 }
 
 export interface PolicyListRes {
-  data: OrderRecord[];
+  data: OrderAfterSaleRecord[];
   current_page: number;
   total: number;
 }
