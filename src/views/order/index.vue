@@ -86,7 +86,7 @@
         :pagination="pagination"
         :columns="columnsList"
         :data="renderData"
-        :bordered="false"
+        :bordered="true"
         scrollbar
         column-resizable
         @page-change="onPageChange"

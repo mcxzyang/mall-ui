@@ -53,7 +53,7 @@
         </a-col>
         <a-divider style="height: 80px" direction="vertical" />
         <a-col :flex="'86px'" style="text-align: right">
-          <a-space :size="18">
+          <a-space :size="18" direction="vertical">
             <a-button type="primary" @click="search">
               <template #icon>
                 <icon-search />
@@ -95,7 +95,7 @@
         :pagination="pagination"
         :columns="columnsList"
         :data="renderData"
-        :bordered="false"
+        :bordered="true"
         :size="size"
         @page-change="onPageChange"
       >

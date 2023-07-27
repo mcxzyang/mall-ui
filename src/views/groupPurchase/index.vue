@@ -68,15 +68,15 @@
         :pagination="pagination"
         :columns="columnsList"
         :data="renderData"
-        :bordered="false"
+        :bordered="true"
         :size="size"
         @page-change="onPageChange"
       >
-        <template #status="{ record }">
+        <!-- <template #status="{ record }">
           <span v-if="record.status === 1" class="circle"></span>
           <span v-else class="circle pass"></span>
           {{ record.status === 1 ? '未成团' : '已成团' }}
-        </template>
+        </template> -->
         <template #operations="{ record }">
           <a-space>
             <a-button type="text" size="mini" @click="handleEdit(record)">
@@ -181,11 +181,6 @@
     {
       title: '成团人数',
       dataIndex: 'number_count',
-    },
-    {
-      title: '状态',
-      dataIndex: 'status',
-      slotName: 'status',
     },
     {
       title: '操作',

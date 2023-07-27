@@ -60,7 +60,7 @@
         :pagination="pagination"
         :columns="columnsList"
         :data="renderData"
-        :bordered="false"
+        :bordered="true"
         @page-change="onPageChange"
       >
         <template #operations="{ record }">

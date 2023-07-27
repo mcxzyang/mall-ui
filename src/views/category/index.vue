@@ -60,7 +60,7 @@
         :loading="loading"
         :columns="columnsList"
         :data="renderData"
-        :bordered="false"
+        :bordered="true"
         :pagination="false"
         size="large"
       >

@@ -61,7 +61,7 @@
         :pagination="pagination"
         :columns="columnsList"
         :data="renderData"
-        :bordered="false"
+        :bordered="true"
         :size="size"
         @page-change="onPageChange"
       >
