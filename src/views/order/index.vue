@@ -11,12 +11,12 @@
             label-align="left"
           >
             <a-row :gutter="16">
-              <a-col :span="12">
+              <a-col :span="8">
                 <a-form-item field="name" label="订单号">
                   <a-input v-model="formModel.order_no" placeholder="订单号" />
                 </a-form-item>
               </a-col>
-              <a-col :span="12">
+              <a-col :span="8">
                 <a-form-item field="source" label="来源">
                   <a-select v-model="formModel.source" :allow-clear="true">
                     <a-option
@@ -28,7 +28,7 @@
                   </a-select>
                 </a-form-item>
               </a-col>
-              <a-col :span="12">
+              <a-col :span="8">
                 <a-form-item field="type" label="类型">
                   <a-select v-model="formModel.type" :allow-clear="true">
                     <a-option
@@ -40,12 +40,12 @@
                   </a-select>
                 </a-form-item>
               </a-col>
-              <a-col :span="12">
+              <a-col :span="8">
                 <a-form-item field="created_at" label="创建时间">
                   <a-range-picker v-model="formModel.created_at" show-time />
                 </a-form-item>
               </a-col>
-              <a-col :span="12">
+              <a-col :span="8">
                 <a-form-item field="status" label="状态">
                   <a-select v-model="formModel.status" :allow-clear="true">
                     <a-option
@@ -60,9 +60,9 @@
             </a-row>
           </a-form>
         </a-col>
-        <a-divider style="height: 140px" direction="vertical" />
+        <a-divider style="height: 80px" direction="vertical" />
         <a-col :flex="'86px'" style="text-align: right">
-          <a-space :size="18">
+          <a-space :size="18" direction="vertical">
             <a-button type="primary" @click="search">
               <template #icon>
                 <icon-search />
