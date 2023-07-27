@@ -1,5 +1,4 @@
 import axios from 'axios';
-import qs from 'query-string';
 
 export interface AddressRecord {
   address: string;
@@ -38,6 +37,17 @@ export interface OrderRecord {
   address?: AddressRecord;
   order_items?: any;
   user: OrderUser;
+  type?: number;
+}
+
+export interface sourceType {
+  id: number;
+  name: string;
+}
+
+export interface statusRecord {
+  id: number;
+  name: string;
 }
 
 export interface PolicyParams extends Partial<OrderRecord> {
@@ -59,9 +69,6 @@ export interface PolicyListRes {
 export function queryOrderList(params: PolicyParams) {
   return axios.get<PolicyListRes>('/order', {
     params,
-    paramsSerializer: (obj) => {
-      return qs.stringify(obj);
-    },
   });
 }
 
@@ -74,9 +81,13 @@ export function deleteRecord(id: number | string) {
 }
 
 export function getStatusMapping() {
-  return axios.get<any>(`/order/status/mapping`);
+  return axios.get<statusRecord[]>(`/order/status/mapping`);
 }
 
 export function deliveryOrderItem(id: number | string, params: any) {
   return axios.post<any>(`/orderItem/${id}/delivery`, params);
+}
+
+export function getSourceTypeList() {
+  return axios.get<sourceType[]>(`/order/sourceType/list`);
 }

@@ -11,15 +11,56 @@
             label-align="left"
           >
             <a-row :gutter="16">
-              <a-col :span="8">
+              <a-col :span="12">
                 <a-form-item field="name" label="订单号">
                   <a-input v-model="formModel.order_no" placeholder="订单号" />
+                </a-form-item>
+              </a-col>
+              <a-col :span="12">
+                <a-form-item field="source" label="来源">
+                  <a-select v-model="formModel.source" :allow-clear="true">
+                    <a-option
+                      v-for="(item, key) in sourceTypeList"
+                      :key="key"
+                      :value="item.id"
+                      >{{ item.name }}</a-option
+                    >
+                  </a-select>
+                </a-form-item>
+              </a-col>
+              <a-col :span="12">
+                <a-form-item field="type" label="类型">
+                  <a-select v-model="formModel.type" :allow-clear="true">
+                    <a-option
+                      v-for="(item, key) in typeList"
+                      :key="key"
+                      :value="item.id"
+                      >{{ item.name }}</a-option
+                    >
+                  </a-select>
+                </a-form-item>
+              </a-col>
+              <a-col :span="12">
+                <a-form-item field="created_at" label="创建时间">
+                  <a-range-picker v-model="formModel.created_at" show-time />
+                </a-form-item>
+              </a-col>
+              <a-col :span="12">
+                <a-form-item field="status" label="状态">
+                  <a-select v-model="formModel.status" :allow-clear="true">
+                    <a-option
+                      v-for="(item, key) in statusList"
+                      :key="key"
+                      :value="item.id"
+                      >{{ item.name }}</a-option
+                    >
+                  </a-select>
                 </a-form-item>
               </a-col>
             </a-row>
           </a-form>
         </a-col>
-        <a-divider style="height: 40px" direction="vertical" />
+        <a-divider style="height: 140px" direction="vertical" />
         <a-col :flex="'86px'" style="text-align: right">
           <a-space :size="18">
             <a-button type="primary" @click="search">
@@ -46,7 +87,8 @@
         :columns="columnsList"
         :data="renderData"
         :bordered="false"
-        :size="size"
+        scrollbar
+        column-resizable
         @page-change="onPageChange"
       >
         <template #stock="{ record }">
@@ -74,10 +116,9 @@
         </template>
         <template #status="{ record }">
           <a-tag :color="record.status_color">{{ record.status_text }}</a-tag>
-
-          <!-- <span v-if="record.status === 1" class="circle"></span>
-          <span v-else class="circle pass"></span>
-          {{ record.status === 1 ? '正常' : '已禁用' }} -->
+        </template>
+        <template #type="{ record }">
+          <a-tag color="arcoblue">{{ orderTypeFilter(record.type) }}</a-tag>
         </template>
         <template #operations="{ record }">
           <a-space>
@@ -111,22 +152,54 @@
     OrderRecord,
     PolicyParams,
     deleteRecord,
+    sourceType,
+    getSourceTypeList,
+    statusRecord,
+    getStatusMapping,
   } from '@/api/order';
   import { Message } from '@arco-design/web-vue';
   import router from '@/router';
 
-  type SizeProps = 'mini' | 'small' | 'medium' | 'large';
-
   const generateFormModel = () => {
     return {
       order_no: '',
+      source: '',
+      type: '',
+      created_at: [],
+      status: '',
     };
   };
+
+  const sourceTypeList = ref<sourceType[]>([]);
+  const fetchSourceTypelist = async () => {
+    const { data } = await getSourceTypeList();
+    sourceTypeList.value = data;
+  };
+  fetchSourceTypelist();
+
+  const statusList = ref<statusRecord[]>([]);
+  const fetchStatuslist = async () => {
+    const { data } = await getStatusMapping();
+    statusList.value = data;
+  };
+  fetchStatuslist();
+
+  const typeList = reactive([
+    {
+      id: 1,
+      name: '普通订单',
+    },
+    {
+      id: 2,
+      name: '团购订单',
+    },
+  ]);
+
   const { loading, setLoading } = useLoading(true);
   const renderData = ref<OrderRecord[]>([]);
   const formModel = ref(generateFormModel());
 
-  const size = ref<SizeProps>('large');
+  // const size = ref<SizeProps>('large');
 
   const basePagination: Pagination = {
     page: 1,
@@ -150,6 +223,11 @@
       title: '来源',
       dataIndex: 'source',
       slotName: 'source',
+    },
+    {
+      title: '类型',
+      dataIndex: 'type',
+      slotName: 'type',
     },
     {
       title: '购买人',
@@ -231,5 +309,13 @@
   fetchData();
   const reset = () => {
     formModel.value = generateFormModel();
+  };
+
+  const orderTypeFilter = (type: number) => {
+    const typeMap: any = {
+      1: '普通订单',
+      2: '团购订单',
+    };
+    return typeMap[type] || null;
   };
 </script>

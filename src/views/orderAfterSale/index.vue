@@ -11,9 +11,24 @@
             label-align="left"
           >
             <a-row :gutter="16">
-              <a-col :span="8">
+              <a-col :span="12">
                 <a-form-item field="name" label="售后订单号">
                   <a-input v-model="formModel.no" placeholder="售后订单号" />
+                </a-form-item>
+              </a-col>
+              <a-col :span="12">
+                <a-form-item field="after_status" label="售后状态">
+                  <a-select
+                    v-model="formModel.after_status"
+                    :allow-clear="true"
+                  >
+                    <a-option
+                      v-for="(item, key) in statusList"
+                      :key="key"
+                      :value="item.id"
+                      >{{ item.name }}</a-option
+                    >
+                  </a-select>
                 </a-form-item>
               </a-col>
             </a-row>
@@ -46,7 +61,6 @@
         :columns="columnsList"
         :data="renderData"
         :bordered="false"
-        :size="size"
         @page-change="onPageChange"
       >
         <template #operations="{ record }">
@@ -81,22 +95,28 @@
     OrderAfterSaleRecord,
     PolicyParams,
     deleteRecord,
+    afterStatusRecord,
+    getStatusMapping,
   } from '@/api/orderAfterSale';
   import { Message } from '@arco-design/web-vue';
   import router from '@/router';
 
-  type SizeProps = 'mini' | 'small' | 'medium' | 'large';
-
   const generateFormModel = () => {
     return {
       no: '',
+      after_status: '',
     };
   };
   const { loading, setLoading } = useLoading(true);
   const renderData = ref<OrderAfterSaleRecord[]>([]);
   const formModel = ref(generateFormModel());
 
-  const size = ref<SizeProps>('large');
+  const statusList = ref<afterStatusRecord[]>([]);
+  const fetchStatuslist = async () => {
+    const { data } = await getStatusMapping();
+    statusList.value = data;
+  };
+  fetchStatuslist();
 
   const basePagination: Pagination = {
     page: 1,

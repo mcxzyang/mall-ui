@@ -1,5 +1,4 @@
 import axios from 'axios';
-import qs from 'query-string';
 import { OrderRecord } from './order';
 
 export interface AddressRecord {
@@ -34,6 +33,11 @@ export interface OrderAfterSaleRecord {
   user: OrderAfterSaleUser;
 }
 
+export interface afterStatusRecord {
+  id: number;
+  name: string;
+}
+
 export interface PolicyParams extends Partial<OrderAfterSaleRecord> {
   page: number;
   pageSize: number;
@@ -53,9 +57,6 @@ export interface PolicyListRes {
 export function queryOrderAfterSaleList(params: PolicyParams) {
   return axios.get<PolicyListRes>('/orderAfterSale', {
     params,
-    paramsSerializer: (obj) => {
-      return qs.stringify(obj);
-    },
   });
 }
 
@@ -68,7 +69,7 @@ export function deleteRecord(id: number | string) {
 }
 
 export function getStatusMapping() {
-  return axios.get<any>(`/order/status/mapping`);
+  return axios.get<any>(`/orderAfterSale/status/mapping`);
 }
 
 export function auditRecord(id: number | string, type: number | string) {

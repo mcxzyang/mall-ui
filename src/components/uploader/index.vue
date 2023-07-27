@@ -33,7 +33,7 @@
 
   const emits = defineEmits(['update:modelValue']);
 
-  const uploadChange = (fileItemList: FileItem[], fileItem: FileItem) => {
+  const uploadChange = (fileItemList: FileItem[]) => {
     if (fileItemList.length === 0) {
       emits('update:modelValue', '');
     }
