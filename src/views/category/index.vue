@@ -113,8 +113,6 @@
   import { Message } from '@arco-design/web-vue';
   import FormModal from './components/form-modal.vue';
 
-  type SizeProps = 'mini' | 'small' | 'medium' | 'large';
-
   const generateFormModel = () => {
     return {
       name: '',
