@@ -81,3 +81,7 @@ export function deleteRecord(id: number) {
 export function getSkuList(productId: number) {
   return axios.get<any>(`/product/${productId}/skuList`);
 }
+
+export function queryCompanyList(productId: number) {
+  return axios.get<any>(`/product/${productId}/companyList`);
+}

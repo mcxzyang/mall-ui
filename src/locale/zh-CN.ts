@@ -39,6 +39,8 @@ export default {
   'menu.vendor.list': '供应商列表',
   'menu.groupPurchase': '团购管理',
   'menu.groupPurchase.list': '团购列表',
+  'menu.recommendProductCompany': '商品推荐管理',
+  'menu.recommendProductCompany.list': '商品推荐列表',
   ...localeSettings,
   ...localeMessageBox,
   ...localeLogin,
