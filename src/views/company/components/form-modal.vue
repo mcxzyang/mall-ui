@@ -38,6 +38,16 @@
               <a-input v-model="modalData.client_secret"></a-input>
             </a-form-item>
           </a-col>
+          <a-col :span="24">
+            <a-form-item label="登录用户名" field="username">
+              <a-input v-model="modalData.username"></a-input>
+            </a-form-item>
+          </a-col>
+          <a-col :span="24">
+            <a-form-item label="登录密码" field="password">
+              <a-input v-model="modalData.password" type="password"></a-input>
+            </a-form-item>
+          </a-col>
         </a-row>
       </a-form>
     </div>
@@ -81,6 +91,8 @@
       link_name: '',
       client_id: '',
       client_secret: '',
+      username: '',
+      password: '',
     };
   };
 

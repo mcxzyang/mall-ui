@@ -158,6 +158,10 @@
       dataIndex: 'link_phone',
     },
     {
+      title: '登录用户名',
+      dataIndex: 'username',
+    },
+    {
       title: '状态',
       dataIndex: 'status',
       slotName: 'status',
