@@ -192,6 +192,8 @@
 
   const size = ref<SizeProps>('large');
 
+  const searchParams = ref(null as any);
+
   const basePagination: Pagination = {
     page: 1,
     pageSize: 20,
@@ -288,17 +290,19 @@
   const handledelete = async (item: any) => {
     await deleteRecord(item.id);
     Message.success('删除成功');
-    fetchData();
+    fetchData(searchParams.value);
   };
 
   const search = () => {
-    fetchData({
+    searchParams.value = {
       ...basePagination,
       ...formModel.value,
-    } as unknown as PolicyParams);
+    };
+    fetchData(searchParams.value);
   };
   const onPageChange = (page: number) => {
-    fetchData({ ...basePagination, ...formModel.value, page });
+    searchParams.value = { ...basePagination, ...formModel.value, page };
+    fetchData(searchParams.value);
   };
 
   fetchData();
@@ -309,6 +313,6 @@
   const changeStatus = async (value: any, record: PolicyRecord) => {
     await saveRecord(record.id, record);
     Message.success('操作成功');
-    fetchData();
+    fetchData(searchParams.value);
   };
 </script>
