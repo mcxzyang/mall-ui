@@ -17,10 +17,18 @@
                 </a-form-item>
               </a-col>
               <a-col :span="8">
-                <a-form-item field="source" label="来源">
-                  <a-select v-model="formModel.source" :allow-clear="true">
+                <a-form-item field="name" label="收件人">
+                  <a-input
+                    v-model="formModel.receive"
+                    placeholder="收件人姓名或者手机"
+                  />
+                </a-form-item>
+              </a-col>
+              <a-col :span="8">
+                <a-form-item field="source" label="商城来源">
+                  <a-select v-model="formModel.companies" multiple>
                     <a-option
-                      v-for="(item, key) in sourceTypeList"
+                      v-for="(item, key) in companyList"
                       :key="key"
                       :value="item.id"
                       >{{ item.name }}</a-option
@@ -42,7 +50,7 @@
               </a-col>
               <a-col :span="8">
                 <a-form-item field="created_at" label="创建时间">
-                  <a-range-picker v-model="formModel.created_at" show-time />
+                  <a-range-picker v-model="formModel.created_at" />
                 </a-form-item>
               </a-col>
               <a-col :span="8">
@@ -69,11 +77,17 @@
               </template>
               搜索
             </a-button>
-            <a-button @click="reset">
+            <!-- <a-button @click="reset">
               <template #icon>
                 <icon-refresh />
               </template>
               重置
+            </a-button> -->
+            <a-button :loading="downloadLoading" @click="download">
+              <template #icon>
+                <icon-download />
+              </template>
+              下载
             </a-button>
           </a-space>
         </a-col>
@@ -152,11 +166,18 @@
     OrderRecord,
     PolicyParams,
     deleteRecord,
-    sourceType,
-    getSourceTypeList,
+    // sourceType,
+    // getSourceTypeList,
     statusRecord,
     getStatusMapping,
+    downloadExcel,
   } from '@/api/order';
+
+  import {
+    queryPolicyList as queryCompanyList,
+    PolicyRecord as CompanyRecord,
+  } from '@/api/company';
+
   import { Message } from '@arco-design/web-vue';
   import router from '@/router';
 
@@ -167,15 +188,28 @@
       type: '',
       created_at: [],
       status: '',
+      companies: [],
+      receive: '',
     };
   };
 
-  const sourceTypeList = ref<sourceType[]>([]);
-  const fetchSourceTypelist = async () => {
-    const { data } = await getSourceTypeList();
-    sourceTypeList.value = data;
+  const searchParams = ref(null as any);
+
+  const downloadLoading = ref(false);
+
+  // const sourceTypeList = ref<sourceType[]>([]);
+  // const fetchSourceTypelist = async () => {
+  //   const { data } = await getSourceTypeList();
+  //   sourceTypeList.value = data;
+  // };
+  // fetchSourceTypelist();
+
+  const companyList = ref<CompanyRecord[]>([]);
+  const fetchCompanyList = async () => {
+    const { data } = await queryCompanyList({ paging: 0 });
+    companyList.value = data;
   };
-  fetchSourceTypelist();
+  fetchCompanyList();
 
   const statusList = ref<statusRecord[]>([]);
   const fetchStatuslist = async () => {
@@ -207,6 +241,7 @@
   };
   const pagination = reactive({
     ...basePagination,
+    'show-total': true,
   });
 
   const columnsList = ref<TableColumnData[]>([
@@ -220,9 +255,9 @@
       slotName: 'order_no',
     },
     {
-      title: '来源',
-      dataIndex: 'source',
-      slotName: 'source',
+      title: '商城来源',
+      dataIndex: 'company.name',
+      // slotName: 'source',
     },
     {
       title: '类型',
@@ -297,18 +332,34 @@
   };
 
   const search = () => {
-    fetchData({
+    searchParams.value = {
       ...basePagination,
       ...formModel.value,
-    } as unknown as PolicyParams);
+    };
+    fetchData(searchParams.value);
   };
   const onPageChange = (page: number) => {
-    fetchData({ ...basePagination, page });
+    searchParams.value = { ...basePagination, ...formModel.value, page };
+    fetchData(searchParams.value);
   };
 
   fetchData();
-  const reset = () => {
-    formModel.value = generateFormModel();
+  // const reset = () => {
+  //   formModel.value = generateFormModel();
+  // };
+
+  const download = async () => {
+    downloadLoading.value = true;
+    const params = searchParams.value;
+    const response = await downloadExcel(params);
+    const link = document.createElement('a');
+    link.href = window.URL.createObjectURL(new Blob([response as any]));
+
+    link.setAttribute('download', '订单列表.xlsx');
+
+    document.body.appendChild(link);
+    link.click();
+    downloadLoading.value = false;
   };
 
   const orderTypeFilter = (type: number) => {

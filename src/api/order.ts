@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { PolicyRecord as CompanyRecord } from './company';
 
 export interface AddressRecord {
   address: string;
@@ -38,6 +39,7 @@ export interface OrderRecord {
   order_items?: any;
   user: OrderUser;
   type?: number;
+  company?: CompanyRecord;
 }
 
 export interface sourceType {
@@ -90,4 +92,11 @@ export function deliveryOrderItem(id: number | string, params: any) {
 
 export function getSourceTypeList() {
   return axios.get<sourceType[]>(`/order/sourceType/list`);
+}
+
+export function downloadExcel(params: PolicyParams) {
+  return axios.get<any>('/order/list/export', {
+    params,
+    responseType: 'blob',
+  });
 }

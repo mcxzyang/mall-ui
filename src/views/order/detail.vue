@@ -31,9 +31,10 @@
         </a-col>
         <a-col :span="8">
           <a-form-item label="订单来源">
-            <a-tag :color="orderData?.source_color">{{
+            <!-- <a-tag :color="orderData?.source_color">{{
               orderData?.source_text
-            }}</a-tag>
+            }}</a-tag> -->
+            {{ orderData.company?.name }}
           </a-form-item>
         </a-col>
         <a-col :span="8">

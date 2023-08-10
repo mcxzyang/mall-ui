@@ -77,3 +77,10 @@ export function auditRecord(id: number | string, type: number | string) {
     type,
   });
 }
+
+export function downloadExcel(params: PolicyParams) {
+  return axios.get<any>('/orderAfterSale/list/export', {
+    params,
+    responseType: 'blob',
+  });
+}

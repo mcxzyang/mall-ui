@@ -200,6 +200,7 @@
   };
   const pagination = reactive({
     ...basePagination,
+    'show-total': true,
   });
 
   const vendorList = ref<vendorRecord[]>([]);

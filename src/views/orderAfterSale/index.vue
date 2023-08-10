@@ -43,11 +43,17 @@
               </template>
               搜索
             </a-button>
-            <a-button @click="reset">
+            <!-- <a-button @click="reset">
               <template #icon>
                 <icon-refresh />
               </template>
               重置
+            </a-button> -->
+            <a-button :loading="downloadLoading" @click="download">
+              <template #icon>
+                <icon-download />
+              </template>
+              下载
             </a-button>
           </a-space>
         </a-col>
@@ -97,6 +103,7 @@
     deleteRecord,
     afterStatusRecord,
     getStatusMapping,
+    downloadExcel,
   } from '@/api/orderAfterSale';
   import { Message } from '@arco-design/web-vue';
   import router from '@/router';
@@ -107,6 +114,9 @@
       after_status: '',
     };
   };
+  const searchParams = ref(null as any);
+  const downloadLoading = ref(false);
+
   const { loading, setLoading } = useLoading(true);
   const renderData = ref<OrderAfterSaleRecord[]>([]);
   const formModel = ref(generateFormModel());
@@ -124,6 +134,7 @@
   };
   const pagination = reactive({
     ...basePagination,
+    'show-total': true,
   });
 
   const columnsList = ref<TableColumnData[]>([
@@ -198,17 +209,33 @@
   };
 
   const search = () => {
-    fetchData({
+    searchParams.value = {
       ...basePagination,
       ...formModel.value,
-    } as unknown as PolicyParams);
+    };
+    fetchData(searchParams.value);
   };
   const onPageChange = (page: number) => {
-    fetchData({ ...basePagination, page });
+    searchParams.value = { ...basePagination, ...formModel.value, page };
+    fetchData(searchParams.value);
+  };
+
+  const download = async () => {
+    downloadLoading.value = true;
+    const params = searchParams.value;
+    const response = await downloadExcel(params);
+    const link = document.createElement('a');
+    link.href = window.URL.createObjectURL(new Blob([response as any]));
+
+    link.setAttribute('download', '售后订单列表.xlsx');
+
+    document.body.appendChild(link);
+    link.click();
+    downloadLoading.value = false;
   };
 
   fetchData();
-  const reset = () => {
-    formModel.value = generateFormModel();
-  };
+  // const reset = () => {
+  //   formModel.value = generateFormModel();
+  // };
 </script>
