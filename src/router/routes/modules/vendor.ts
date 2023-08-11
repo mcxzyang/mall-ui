@@ -8,7 +8,7 @@ const VENDOR: AppRouteRecordRaw = {
   meta: {
     locale: 'menu.vendor',
     requiresAuth: true,
-    icon: 'icon-user-group',
+    icon: 'icon-user',
     order: 5,
   },
   children: [

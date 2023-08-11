@@ -1,42 +1,21 @@
 <template>
   <a-modal
     v-model:visible="modalVisible"
-    width="auto"
+    width="50%"
     @cancel="handleCancel"
     @before-ok="handleBeforeOk"
   >
-    <template #title> 发货 </template>
+    <template #title> {{ modalData.id ? '编辑' : '创建' }} </template>
     <div>
       <a-form ref="modalFormRef" :model="modalData">
         <a-row>
           <a-col :span="24">
-            <a-form-item label="商品名称">
-              {{ props.orderItem?.product_sku?.product?.title }}
-            </a-form-item>
-          </a-col>
-          <a-col :span="24">
             <a-form-item
-              label="快递公司"
-              field="express_company_name"
+              label="快递公司名称"
+              field="name"
               :rules="[{ required: true, message: '请填写快递公司名称' }]"
             >
-              <a-select v-model="modalData.express_company_name">
-                <a-option
-                  v-for="(item, key) in expressCompanyList"
-                  :key="key"
-                  :value="item?.name"
-                  >{{ item?.name }}</a-option
-                >
-              </a-select>
-            </a-form-item>
-          </a-col>
-          <a-col :span="24">
-            <a-form-item
-              label="快递单号"
-              field="express_no"
-              :rules="[{ required: true, message: '请填写快递单号' }]"
-            >
-              <a-input v-model="modalData.express_no"></a-input>
+              <a-input v-model="modalData.name"></a-input>
             </a-form-item>
           </a-col>
         </a-row>
@@ -47,26 +26,19 @@
 
 <script setup lang="ts">
   import { ref, watch } from 'vue';
-  import { deliveryOrderItem } from '@/api/order';
+
+  import { addRecord, saveRecord } from '@/api/expressCompany';
   import { Message } from '@arco-design/web-vue';
-  import { PolicyRecord as ExpressCompanyI } from '@/api/expressCompany';
+  import { cloneDeep } from 'lodash';
 
   const props = defineProps({
     visible: {
       type: Boolean,
       default: false,
     },
-    orderId: {
-      type: [Number, String],
-      default: () => null,
-    },
-    orderItem: {
+    formData: {
       type: Object,
       default: () => null,
-    },
-    expressCompanyList: {
-      type: Array<ExpressCompanyI>,
-      default: () => [],
     },
   });
 
@@ -83,12 +55,22 @@
 
   const generateForm = () => {
     return {
-      express_company_name: '',
-      express_no: '',
+      id: 0,
+      name: '',
     };
   };
 
   const modalData = ref(generateForm());
+
+  watch(
+    () => props.formData,
+    (value) => {
+      if (value) {
+        modalData.value = cloneDeep(value) as any;
+      }
+    },
+    { immediate: true }
+  );
 
   const handleCancel = () => {
     modalData.value = generateForm();
@@ -102,8 +84,11 @@
       validateRef.validate().then(async (res: any) => {
         if (!res) {
           try {
-            await deliveryOrderItem(props.orderItem?.id, modalData.value);
-
+            if (!modalData.value.id) {
+              await addRecord(modalData.value);
+            } else {
+              await saveRecord(modalData.value.id, modalData.value);
+            }
             done(true);
             modalData.value = generateForm();
             emit('update-success');

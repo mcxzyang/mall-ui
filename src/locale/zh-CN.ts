@@ -41,6 +41,8 @@ export default {
   'menu.groupPurchase.list': '团购列表',
   'menu.recommendProductCompany': '商品推荐管理',
   'menu.recommendProductCompany.list': '商品推荐列表',
+  'menu.expressCompany': '快递公司管理',
+  'menu.expressCompany.list': '快递公司列表',
   ...localeSettings,
   ...localeMessageBox,
   ...localeLogin,

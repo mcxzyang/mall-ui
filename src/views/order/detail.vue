@@ -139,6 +139,7 @@
       :visible="modalVisble"
       :order-item="orderItem"
       :order-id="orderId"
+      :express-company-list="expressCompanyList"
       @update-visible="updateVisible"
       @update-success="updateSuccess"
     />
@@ -151,6 +152,8 @@
   import type { TableColumnData } from '@arco-design/web-vue/es/table/interface';
 
   import { OrderRecord, getRecord } from '@/api/order';
+
+  import { queryPolicyList as fetchExpressCompany } from '@/api/expressCompany';
 
   import DeliveryModule from './components/delivery.vue';
 
@@ -170,8 +173,19 @@
     }
   };
 
+  const expressCompanyList = ref([] as any);
+
+  const fetchExpressCompanyData = async () => {
+    const { data } = await fetchExpressCompany({
+      paging: 0,
+      status: 1,
+    });
+    expressCompanyList.value = data;
+  };
+
   onMounted(async () => {
     fetchData();
+    fetchExpressCompanyData();
   });
 
   const orderItemColumns = ref<TableColumnData[]>([
