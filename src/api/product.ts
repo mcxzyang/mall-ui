@@ -85,3 +85,7 @@ export function getSkuList(productId: number) {
 export function queryCompanyList(productId: number) {
   return axios.get<any>(`/product/${productId}/companyList`);
 }
+
+export function publishCompany(params: any) {
+  return axios.post(`/product/publish/company`, params);
+}

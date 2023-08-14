@@ -87,9 +87,20 @@
           :span="12"
           style="display: flex; align-items: center; justify-content: end"
         >
+          <a-button
+            type="primary"
+            :disabled="publishDisabled()"
+            @click="publishToCompany"
+          >
+            <template #icon>
+              <icon-send />
+            </template>
+            发布到商城
+          </a-button>
         </a-col>
       </a-row>
       <a-table
+        v-model:selected-keys="selectedKeys"
         row-key="id"
         :loading="loading"
         :pagination="pagination"
@@ -97,6 +108,7 @@
         :data="renderData"
         :bordered="true"
         :size="size"
+        :row-selection="rowSelection"
         @page-change="onPageChange"
       >
         <template #stock="{ record }">
@@ -147,6 +159,12 @@
         </template>
       </a-table>
     </a-card>
+    <FormModal
+      :visible="modalVisble"
+      :product-ids="selectedKeys"
+      @update-visible="updateVisible"
+      @update-success="updateSuccess"
+    />
   </div>
 </template>
 
@@ -175,6 +193,10 @@
     queryPolicyList as queryCompanyList,
     PolicyRecord as CompanyRecord,
   } from '@/api/company';
+
+  import FormModal from './components/form-modal.vue';
+
+  const modalVisble = ref(false);
 
   type SizeProps = 'mini' | 'small' | 'medium' | 'large';
 
@@ -264,6 +286,18 @@
     },
   ]);
 
+  const rowSelection = reactive({
+    type: 'checkbox',
+    showCheckedAll: true,
+    onlyCurrent: false,
+  }) as any;
+
+  const selectedKeys = ref([]);
+
+  const publishDisabled = () => {
+    return selectedKeys.value.length <= 0;
+  };
+
   const fetchData = async (
     params: PolicyParams = { page: 1, pageSize: 20 }
   ) => {
@@ -315,5 +349,18 @@
     await saveRecord(record.id, record);
     Message.success('操作成功');
     fetchData(searchParams.value);
+  };
+
+  const publishToCompany = () => {
+    modalVisble.value = true;
+  };
+
+  const updateVisible = (visible: boolean) => {
+    modalVisble.value = visible;
+  };
+
+  const updateSuccess = () => {
+    modalVisble.value = false;
+    selectedKeys.value = [];
   };
 </script>
