@@ -6,6 +6,13 @@ export interface ContentDataRecord {
   y: number;
 }
 
+export interface DataPanelRecord {
+  orderTotal: number;
+  productTotal: number;
+  orderAfterSaleTotal: number;
+  paiedOrderTotal: number;
+}
+
 export function queryContentData() {
   return axios.get<ContentDataRecord[]>('/dashboard/contentData');
 }
@@ -19,4 +26,8 @@ export interface PopularRecord {
 
 export function queryPopularList(params: { type: string }) {
   return axios.get<TableData[]>('/dashboard/popular', { params });
+}
+
+export function queryDataPanel() {
+  return axios.get('/dashboard/dataPanel');
 }

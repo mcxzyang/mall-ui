@@ -12,16 +12,11 @@
           />
         </a-avatar>
         <a-statistic
-          :title="$t('workplace.onlineContent')"
-          :value="373.5"
-          :precision="1"
+          title="商品数量"
+          :value="productTotal"
           :value-from="0"
           animation
-          show-group-separator
         >
-          <template #suffix>
-            W+ <span class="unit">{{ $t('workplace.pecs') }}</span>
-          </template>
         </a-statistic>
       </a-space>
     </a-grid-item>
@@ -37,15 +32,11 @@
           />
         </a-avatar>
         <a-statistic
-          :title="$t('workplace.putIn')"
-          :value="368"
+          title="订单数量"
+          :value="orderTotal"
           :value-from="0"
           animation
-          show-group-separator
         >
-          <template #suffix>
-            <span class="unit">{{ $t('workplace.pecs') }}</span>
-          </template>
         </a-statistic>
       </a-space>
     </a-grid-item>
@@ -61,15 +52,11 @@
           />
         </a-avatar>
         <a-statistic
-          :title="$t('workplace.newDay')"
-          :value="8874"
+          title="售后订单数量"
+          :value="orderAfterSaleTotal"
           :value-from="0"
           animation
-          show-group-separator
         >
-          <template #suffix>
-            <span class="unit">{{ $t('workplace.pecs') }}</span>
-          </template>
         </a-statistic>
       </a-space>
     </a-grid-item>
@@ -86,13 +73,11 @@
           />
         </a-avatar>
         <a-statistic
-          :title="$t('workplace.newFromYesterday')"
-          :value="2.8"
-          :precision="1"
+          title="已付款订单数量"
+          :value="paiedOrderTotal"
           :value-from="0"
           animation
         >
-          <template #suffix> % <icon-caret-up class="up-icon" /> </template>
         </a-statistic>
       </a-space>
     </a-grid-item>
@@ -102,7 +87,25 @@
   </a-grid>
 </template>
 
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+  import { ref } from 'vue';
+  import { queryDataPanel } from '@/api/dashboard';
+
+  const orderTotal = ref(0);
+  const productTotal = ref(0);
+  const orderAfterSaleTotal = ref(0);
+  const paiedOrderTotal = ref(0);
+  const fetchData = async () => {
+    const { data } = await queryDataPanel();
+    orderTotal.value = data.orderTotal;
+    productTotal.value = data.productTotal;
+    orderAfterSaleTotal.value = data.orderAfterSaleTotal;
+    paiedOrderTotal.value = data.paiedOrderTotal;
+    // dataPanel.value = data;
+  };
+
+  fetchData();
+</script>
 
 <style lang="less" scoped>
   .arco-grid.panel {
