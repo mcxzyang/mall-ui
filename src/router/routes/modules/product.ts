@@ -31,6 +31,7 @@ const PRODUCT: AppRouteRecordRaw = {
         requiresAuth: true,
         roles: ['*'],
         hideInMenu: true,
+        ignoreCache: true,
       },
     },
   ],

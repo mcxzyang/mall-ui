@@ -100,3 +100,7 @@ export function downloadExcel(params: PolicyParams) {
     responseType: 'blob',
   });
 }
+
+export function updateOrderItem(orderItemId: any, params: any) {
+  return axios.put(`/orderItem/${orderItemId}`, params);
+}

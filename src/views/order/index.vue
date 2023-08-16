@@ -139,7 +139,13 @@
             <a-button type="text" size="mini" @click="handleView(record)">
               查看
             </a-button>
-            <a-popconfirm
+            <a-dropdown @select="handleSelectList($event, record)">
+              <a-button type="text" size="mini">更多</a-button>
+              <template #content>
+                <a-doption value="delete">删除</a-doption>
+              </template>
+            </a-dropdown>
+            <!-- <a-popconfirm
               content="确定删除此条记录吗?"
               type="warning"
               @ok="handledelete(record)"
@@ -147,7 +153,7 @@
               <a-button type="text" status="danger" size="mini">
                 删除
               </a-button>
-            </a-popconfirm>
+            </a-popconfirm> -->
           </a-space>
         </template>
       </a-table>
@@ -368,5 +374,11 @@
       2: '团购订单',
     };
     return typeMap[type] || null;
+  };
+
+  const handleSelectList = (v: any, record: any) => {
+    if (v === 'delete') {
+      handledelete(record);
+    }
   };
 </script>

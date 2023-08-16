@@ -131,6 +131,14 @@
             >
               发货
             </a-button>
+            <a-button
+              v-if="record.status === 3"
+              type="text"
+              size="mini"
+              @click="updateExpress(record)"
+            >
+              修改快递信息
+            </a-button>
           </a-space>
         </template>
       </a-table>
@@ -140,6 +148,7 @@
       :order-item="orderItem"
       :order-id="orderId"
       :express-company-list="expressCompanyList"
+      :if-delivery="ifDelivery"
       @update-visible="updateVisible"
       @update-success="updateSuccess"
     />
@@ -165,6 +174,8 @@
   const orderData = ref<OrderRecord>({} as OrderRecord);
   const modalVisble = ref(false);
   let orderItem = {};
+
+  const ifDelivery = ref(false);
 
   const fetchData = async () => {
     if (orderId) {
@@ -216,6 +227,14 @@
       slotName: 'total',
     },
     {
+      title: '快递公司',
+      dataIndex: 'express_company_name',
+    },
+    {
+      title: '快递单号',
+      dataIndex: 'express_no',
+    },
+    {
       title: '状态',
       dataIndex: 'status_text',
     },
@@ -226,6 +245,7 @@
   ]);
 
   const updateVisible = (visible: boolean) => {
+    orderItem = {};
     modalVisble.value = visible;
   };
 
@@ -235,6 +255,13 @@
   };
 
   const delivery = (record: any) => {
+    ifDelivery.value = true;
+    orderItem = record;
+    modalVisble.value = true;
+  };
+
+  const updateExpress = (record: any) => {
+    ifDelivery.value = false;
     orderItem = record;
     modalVisble.value = true;
   };

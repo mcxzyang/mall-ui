@@ -6,7 +6,7 @@
         v-if="route.meta.ignoreCache"
         :key="route.fullPath"
       />
-      <keep-alive v-else :include="cacheList">
+      <keep-alive v-else>
         <component :is="Component" :key="route.fullPath" />
       </keep-alive> -->
       <keep-alive>

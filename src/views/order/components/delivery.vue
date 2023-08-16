@@ -5,7 +5,7 @@
     @cancel="handleCancel"
     @before-ok="handleBeforeOk"
   >
-    <template #title> 发货 </template>
+    <template #title> {{ title() }} </template>
     <div>
       <a-form ref="modalFormRef" :model="modalData">
         <a-row>
@@ -47,9 +47,10 @@
 
 <script setup lang="ts">
   import { ref, watch } from 'vue';
-  import { deliveryOrderItem } from '@/api/order';
+  import { deliveryOrderItem, updateOrderItem } from '@/api/order';
   import { Message } from '@arco-design/web-vue';
   import { PolicyRecord as ExpressCompanyI } from '@/api/expressCompany';
+  import { clone } from 'lodash';
 
   const props = defineProps({
     visible: {
@@ -68,18 +69,19 @@
       type: Array<ExpressCompanyI>,
       default: () => [],
     },
+    ifDelivery: {
+      type: Boolean,
+      default: true,
+    },
   });
 
   const emit = defineEmits(['update-visible', 'update-success']);
 
   const modalVisible = ref(false);
 
-  watch(
-    () => props.visible,
-    (value) => {
-      modalVisible.value = value;
-    }
-  );
+  const title = () => {
+    return props.ifDelivery ? '发货' : '修改快递信息';
+  };
 
   const generateForm = () => {
     return {
@@ -89,6 +91,25 @@
   };
 
   const modalData = ref(generateForm());
+
+  watch(
+    () => props.visible,
+    (value) => {
+      modalVisible.value = value;
+    }
+  );
+
+  watch(
+    () => props.orderItem,
+    (value) => {
+      const orderItem = clone(value);
+      modalData.value = orderItem as any;
+    },
+    {
+      deep: true,
+      immediate: true,
+    }
+  );
 
   const handleCancel = () => {
     modalData.value = generateForm();
@@ -102,7 +123,11 @@
       validateRef.validate().then(async (res: any) => {
         if (!res) {
           try {
-            await deliveryOrderItem(props.orderItem?.id, modalData.value);
+            if (props.ifDelivery) {
+              await deliveryOrderItem(props.orderItem?.id, modalData.value);
+            } else {
+              await updateOrderItem(props.orderItem?.id, modalData.value);
+            }
 
             done(true);
             modalData.value = generateForm();

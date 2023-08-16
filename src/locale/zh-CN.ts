@@ -43,6 +43,8 @@ export default {
   'menu.recommendProductCompany.list': '商品推荐列表',
   'menu.expressCompany': '快递公司管理',
   'menu.expressCompany.list': '快递公司列表',
+  'menu.users': '用户管理',
+  'menu.users.list': '用户列表',
   ...localeSettings,
   ...localeMessageBox,
   ...localeLogin,

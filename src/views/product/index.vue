@@ -73,14 +73,12 @@
       <a-row style="margin-bottom: 16px">
         <a-col :span="12">
           <a-space>
-            <router-link :to="{ name: 'ProductOperation' }">
-              <a-button type="primary">
-                <template #icon>
-                  <icon-plus />
-                </template>
-                新增
-              </a-button>
-            </router-link>
+            <a-button type="primary" @click="addProduct()">
+              <template #icon>
+                <icon-plus />
+              </template>
+              新增
+            </a-button>
           </a-space>
         </a-col>
         <a-col
@@ -362,5 +360,22 @@
   const updateSuccess = () => {
     modalVisble.value = false;
     selectedKeys.value = [];
+  };
+
+  const addProduct = () => {
+    const t = new Date().getTime();
+
+    router.push({
+      name: 'ProductOperation',
+      query: {
+        t,
+      },
+    });
+  };
+</script>
+
+<script lang="ts">
+  export default {
+    name: 'ProductList',
   };
 </script>
