@@ -147,10 +147,10 @@
       dataIndex: 'no',
       slotName: 'no',
     },
-    // {
-    //   title: '订单号',
-    //   dataIndex: 'order.order_no',
-    // },
+    {
+      title: '支付订单号',
+      dataIndex: 'order.order_no',
+    },
     {
       title: '发起人',
       dataIndex: 'user.nickname',

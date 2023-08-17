@@ -235,8 +235,12 @@
       dataIndex: 'express_no',
     },
     {
-      title: '状态',
+      title: '订单状态',
       dataIndex: 'status_text',
+    },
+    {
+      title: '售后状态',
+      dataIndex: 'after_status_text',
     },
     {
       title: '操作',

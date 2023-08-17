@@ -40,6 +40,7 @@ export interface OrderRecord {
   user: OrderUser;
   type?: number;
   company?: CompanyRecord;
+  order_after_sales_count: number;
 }
 
 export interface sourceType {

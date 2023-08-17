@@ -128,6 +128,9 @@
         <template #source="{ record }">
           <a-tag :color="record.source_color">{{ record.source_text }}</a-tag>
         </template>
+        <template #order_after_sales_count="{ record }">
+          <a-tag v-if="record.order_after_sales_count > 0">有售后</a-tag>
+        </template>
         <template #status="{ record }">
           <a-tag :color="record.status_color">{{ record.status_text }}</a-tag>
         </template>
@@ -292,6 +295,10 @@
       dataIndex: 'order_items_count',
     },
     {
+      title: '售后',
+      slotName: 'order_after_sales_count',
+    },
+    {
       title: '状态',
       dataIndex: 'status',
       slotName: 'status',
@@ -370,8 +377,8 @@
 
   const orderTypeFilter = (type: number) => {
     const typeMap: any = {
-      1: '普通订单',
-      2: '团购订单',
+      1: '普',
+      2: '团',
     };
     return typeMap[type] || null;
   };
