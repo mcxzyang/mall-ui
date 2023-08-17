@@ -6,11 +6,8 @@
       :body-style="{
         paddingTop: '20px',
       }"
-      :title="$t('workplace.contentData')"
+      title="近7日已支付订单数"
     >
-      <template #extra>
-        <a-link>{{ $t('workplace.viewMore') }}</a-link>
-      </template>
       <Chart height="289px" :option="chartOption" />
     </a-card>
   </a-spin>
@@ -99,7 +96,7 @@
         axisLabel: {
           formatter(value: any, idx: number) {
             if (idx === 0) return value;
-            return `${value}k`;
+            return `${value}`;
           },
         },
         splitLine: {
@@ -116,8 +113,8 @@
           const [firstElement] = params as ToolTipFormatterParams[];
           return `<div>
             <p class="tooltip-title">${firstElement.axisValueLabel}</p>
-            <div class="content-panel"><span>总内容量</span><span class="tooltip-value">${(
-              Number(firstElement.value) * 10000
+            <div class="content-panel"><span>已支付订单数</span><span class="tooltip-value">${Number(
+              firstElement.value
             ).toLocaleString()}</span></div>
           </div>`;
         },

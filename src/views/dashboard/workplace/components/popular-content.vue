@@ -5,28 +5,11 @@
       :header-style="{ paddingBottom: '0' }"
       :body-style="{ padding: '17px 20px 21px 20px' }"
     >
-      <template #title>
-        {{ $t('workplace.popularContent') }}
-      </template>
-      <template #extra>
+      <template #title> 商品销量排行 </template>
+      <!-- <template #extra>
         <a-link>{{ $t('workplace.viewMore') }}</a-link>
-      </template>
+      </template> -->
       <a-space direction="vertical" :size="10" fill>
-        <a-radio-group
-          v-model:model-value="type"
-          type="button"
-          @change="typeChange as any"
-        >
-          <a-radio value="text">
-            {{ $t('workplace.popularContent.text') }}
-          </a-radio>
-          <a-radio value="image">
-            {{ $t('workplace.popularContent.image') }}
-          </a-radio>
-          <a-radio value="video">
-            {{ $t('workplace.popularContent.video') }}
-          </a-radio>
-        </a-radio-group>
         <a-table
           :data="renderList"
           :pagination="false"
@@ -34,8 +17,12 @@
           :scroll="{ x: '100%', y: '264px' }"
         >
           <template #columns>
-            <a-table-column title="排名" data-index="key"></a-table-column>
-            <a-table-column title="内容标题" data-index="title">
+            <a-table-column title="排名" data-index="key">
+              <template #cell="{ rowIndex }">
+                {{ rowIndex + 1 }}
+              </template>
+            </a-table-column>
+            <a-table-column title="商品标题" data-index="title">
               <template #cell="{ record }">
                 <a-typography-paragraph
                   :ellipsis="{
@@ -46,24 +33,7 @@
                 </a-typography-paragraph>
               </template>
             </a-table-column>
-            <a-table-column title="点击量" data-index="clickNumber">
-            </a-table-column>
-            <a-table-column
-              title="日涨幅"
-              data-index="increases"
-              :sortable="{
-                sortDirections: ['ascend', 'descend'],
-              }"
-            >
-              <template #cell="{ record }">
-                <div class="increases-cell">
-                  <span>{{ record.increases }}%</span>
-                  <icon-caret-up
-                    v-if="record.increases !== 0"
-                    style="color: #f53f3f; font-size: 8px"
-                  />
-                </div>
-              </template>
+            <a-table-column title="销量" data-index="sales_number">
             </a-table-column>
           </template>
         </a-table>
