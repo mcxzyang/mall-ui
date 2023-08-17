@@ -7,9 +7,7 @@
         padding: '20px',
       }"
     >
-      <template #title>
-        {{ $t('workplace.categoriesPercent') }}
-      </template>
+      <template #title> 支付方式占比 </template>
       <Chart height="310px" :option="chartOption" />
     </a-card>
   </a-spin>
@@ -18,15 +16,22 @@
 <script lang="ts" setup>
   import useLoading from '@/hooks/loading';
   import useChartOption from '@/hooks/chart-option';
+  import { queryCategory } from '@/api/dashboard';
+  import { ref } from 'vue';
 
-  const { loading } = useLoading();
+  const formatPayTypeList = ref([]);
+  const payTypeTotal = ref(null);
+  const payTypeData = ref([]);
+
+  const { loading, setLoading } = useLoading(true);
   const { chartOption } = useChartOption((isDark) => {
     // echarts support https://echarts.apache.org/zh/theme-builder.html
     // It's not used here
     return {
       legend: {
         left: 'center',
-        data: ['纯文本', '图文类', '视频类'],
+        data: formatPayTypeList.value,
+        // data: ['纯文本', '图文类', '视频类'],
         bottom: 0,
         icon: 'circle',
         itemWidth: 8,
@@ -48,7 +53,7 @@
             left: 'center',
             top: '40%',
             style: {
-              text: '内容量',
+              text: '已付款订单',
               textAlign: 'center',
               fill: isDark ? '#ffffffb3' : '#4E5969',
               fontSize: 14,
@@ -59,7 +64,7 @@
             left: 'center',
             top: '50%',
             style: {
-              text: '928,531',
+              text: payTypeTotal.value,
               textAlign: 'center',
               fill: isDark ? '#ffffffb3' : '#1D2129',
               fontSize: 16,
@@ -82,33 +87,37 @@
             borderColor: isDark ? '#232324' : '#fff',
             borderWidth: 1,
           },
-          data: [
-            {
-              value: [148564],
-              name: '纯文本',
-              itemStyle: {
-                color: isDark ? '#3D72F6' : '#249EFF',
-              },
-            },
-            {
-              value: [334271],
-              name: '图文类',
-              itemStyle: {
-                color: isDark ? '#A079DC' : '#313CA9',
-              },
-            },
-            {
-              value: [445694],
-              name: '视频类',
-              itemStyle: {
-                color: isDark ? '#6CAAF5' : '#21CCFF',
-              },
-            },
-          ],
+          data: payTypeData.value,
         },
       ],
     };
   });
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const { data: chartData } = await queryCategory();
+      formatPayTypeList.value = chartData.formatPayTypeList;
+      payTypeTotal.value = chartData.payTypeTotal;
+      const colors = [
+        '#249EFF',
+        '#313CA9',
+        '#21CCFF',
+        '#3D72F6',
+        '#A079DC',
+        '#6CAAF5',
+      ];
+      payTypeData.value = chartData.data.map((item: any, key: any) => {
+        item.itemStyle.color = colors[key];
+        return item;
+      });
+      console.log('payTypeData.value', payTypeData.value);
+    } catch (err) {
+      // you can report use errorHandler or other
+    } finally {
+      setLoading(false);
+    }
+  };
+  fetchData();
 </script>
 
 <style scoped lang="less"></style>

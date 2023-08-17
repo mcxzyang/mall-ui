@@ -31,3 +31,7 @@ export function queryPopularList(params: { type: string }) {
 export function queryDataPanel() {
   return axios.get('/dashboard/dataPanel');
 }
+
+export function queryCategory() {
+  return axios.get('/dashboard/category');
+}

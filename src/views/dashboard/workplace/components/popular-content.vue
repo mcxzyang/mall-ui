@@ -48,7 +48,7 @@
   import { queryPopularList } from '@/api/dashboard';
   import type { TableData } from '@arco-design/web-vue/es/table/interface';
 
-  const type = ref('text');
+  // const type = ref('text');
   const { loading, setLoading } = useLoading();
   const renderList = ref<TableData[]>();
   const fetchData = async (contentType: string) => {
@@ -62,9 +62,9 @@
       setLoading(false);
     }
   };
-  const typeChange = (contentType: string) => {
-    fetchData(contentType);
-  };
+  // const typeChange = (contentType: string) => {
+  //   fetchData(contentType);
+  // };
   fetchData('text');
 </script>
 
