@@ -13,6 +13,8 @@ export interface PolicyRecord {
   created_at?: string;
   username: string;
   password?: string;
+  mini_program_app_id: string;
+  mini_program_app_secret: string;
 }
 
 export interface PolicyParams extends Partial<PolicyRecord> {
@@ -40,7 +42,7 @@ export function queryPolicyList(params: PolicyParams | any) {
   });
 }
 
-export function saveRecord(id: number, params: PolicyRecord) {
+export function saveRecord(id: number, params: any) {
   return axios.put(`/company/${id}`, params);
 }
 

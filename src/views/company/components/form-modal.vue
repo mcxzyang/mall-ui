@@ -1,7 +1,7 @@
 <template>
   <a-modal
     v-model:visible="modalVisible"
-    width="600"
+    width="60%"
     @cancel="handleCancel"
     @before-ok="handleBeforeOk"
   >
@@ -29,13 +29,26 @@
             </a-form-item>
           </a-col>
           <a-col :span="24">
-            <a-form-item label="Client ID" field="pid">
+            <a-form-item label="内网 Client ID" field="pid">
               <a-input v-model="modalData.client_id"></a-input>
             </a-form-item>
           </a-col>
           <a-col :span="24">
-            <a-form-item label="Client Secret" field="pid">
+            <a-form-item label="内网 Client Secret" field="pid">
               <a-input v-model="modalData.client_secret"></a-input>
+            </a-form-item>
+          </a-col>
+          <a-col :span="24">
+            <a-form-item label="微信小程序 App ID" field="mini_program_app_id">
+              <a-input v-model="modalData.mini_program_app_id"></a-input>
+            </a-form-item>
+          </a-col>
+          <a-col :span="24">
+            <a-form-item
+              label="微信小程序 App Secret"
+              field="mini_program_app_secret"
+            >
+              <a-input v-model="modalData.mini_program_app_secret"></a-input>
             </a-form-item>
           </a-col>
           <a-col :span="24">
@@ -93,6 +106,8 @@
       client_secret: '',
       username: '',
       password: '',
+      mini_program_app_id: '',
+      mini_program_app_secret: '',
     };
   };
 

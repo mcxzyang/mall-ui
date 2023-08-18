@@ -110,7 +110,6 @@
         item.itemStyle.color = colors[key];
         return item;
       });
-      console.log('payTypeData.value', payTypeData.value);
     } catch (err) {
       // you can report use errorHandler or other
     } finally {

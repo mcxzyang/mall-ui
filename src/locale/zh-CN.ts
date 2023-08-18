@@ -45,6 +45,8 @@ export default {
   'menu.expressCompany.list': '快递公司列表',
   'menu.users': '用户管理',
   'menu.users.list': '用户列表',
+  'menu.userPointLog': '积分流水管理',
+  'menu.userPointLog.list': '积分流水列表',
   ...localeSettings,
   ...localeMessageBox,
   ...localeLogin,
