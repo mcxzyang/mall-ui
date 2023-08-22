@@ -72,10 +72,8 @@ export function getStatusMapping() {
   return axios.get<any>(`/orderAfterSale/status/mapping`);
 }
 
-export function auditRecord(id: number | string, type: number | string) {
-  return axios.post(`/orderAfterSale/${id}/audit`, {
-    type,
-  });
+export function auditRecord(id: number | string, params: any) {
+  return axios.post(`/orderAfterSale/${id}/audit`, params);
 }
 
 export function downloadExcel(params: PolicyParams) {

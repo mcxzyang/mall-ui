@@ -6,6 +6,7 @@
         <router-link :to="{ name: 'OrderAfterSale' }">
           <a-button type="outline">返回</a-button>
         </router-link>
+        <!-- v-if="orderAfterSaleData?.after_status === 1" -->
         <a-space v-if="orderAfterSaleData?.after_status === 1">
           <a-button
             type="primary"
@@ -177,6 +178,12 @@
         </a-timeline-item>
       </a-timeline>
     </a-card>
+    <FormModal
+      :visible="modalVisble"
+      :order-after-sale-id="orderAfterSaleData.id"
+      @update-visible="updateVisible"
+      @update-success="updateSuccess"
+    />
   </div>
 </template>
 
@@ -193,6 +200,8 @@
 
   import { Message } from '@arco-design/web-vue';
 
+  import FormModal from './components/form-modal.vue';
+
   // const router = useRouter();
   const route = useRoute();
 
@@ -204,6 +213,8 @@
   // const modalVisble = ref(false);
   // let orderItem = {};
 
+  const modalVisble = ref(false);
+
   const orderItemList = ref([] as any);
 
   const fetchData = async () => {
@@ -214,6 +225,15 @@
       orderItemList.value.push(data?.order_item);
       // orderItemList = data?.order_item ? [data?.order_item] : [];
     }
+  };
+
+  const updateVisible = (visible: boolean) => {
+    modalVisble.value = visible;
+  };
+
+  const updateSuccess = () => {
+    modalVisble.value = false;
+    fetchData();
   };
 
   const btnLoading = ref(false);
@@ -265,8 +285,12 @@
   // };
 
   const audit = async (type: number) => {
+    if (type === 2) {
+      modalVisble.value = true;
+      return;
+    }
     btnLoading.value = true;
-    await auditRecord(orderAfterSaleData.value?.id, type);
+    await auditRecord(orderAfterSaleData.value?.id, { type });
 
     btnLoading.value = false;
     Message.success('操作成功');
