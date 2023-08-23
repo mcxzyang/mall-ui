@@ -47,6 +47,8 @@ export default {
   'menu.users.list': '用户列表',
   'menu.userPointLog': '积分流水管理',
   'menu.userPointLog.list': '积分流水列表',
+  'menu.tag': '标签管理',
+  'menu.tag.list': '标签列表',
   ...localeSettings,
   ...localeMessageBox,
   ...localeLogin,

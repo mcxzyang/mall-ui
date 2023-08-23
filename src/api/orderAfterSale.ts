@@ -82,3 +82,7 @@ export function downloadExcel(params: PolicyParams) {
     responseType: 'blob',
   });
 }
+
+export function statusSuccess(id: any) {
+  return axios.post(`/orderAfterSale/${id}/statusSuccess`);
+}

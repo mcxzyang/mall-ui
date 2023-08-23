@@ -27,13 +27,7 @@
               <a-form-item
                 label="商品标题"
                 field="title"
-                :rules="[
-                  { required: true, message: '请填写商品标题' },
-                  {
-                    minLength: 5,
-                    message: 'must be greater than 5 characters',
-                  },
-                ]"
+                :rules="[{ required: true, message: '请填写商品标题' }]"
               >
                 <a-input v-model="formData.title"> </a-input>
               </a-form-item>
@@ -107,6 +101,19 @@
             <a-col :span="12">
               <a-form-item field="image" label="商品图片">
                 <Uploader v-model="formData.image" />
+              </a-form-item>
+            </a-col>
+
+            <a-col :span="12">
+              <a-form-item field="multiSelect" label="请选择所属标签">
+                <a-select v-model="formData.tags" multiple>
+                  <a-option
+                    v-for="(item, key) in tagList"
+                    :key="key"
+                    :value="item.id"
+                    >{{ item.name }}</a-option
+                  >
+                </a-select>
               </a-form-item>
             </a-col>
 
@@ -201,6 +208,11 @@
   } from '@/api/category';
 
   import {
+    queryPolicyList as getTagList,
+    PolicyRecord as tagRecord,
+  } from '@/api/tag';
+
+  import {
     PolicyRecord as ProductPolicy,
     addRecord,
     getRecord,
@@ -229,6 +241,7 @@
     product_skus: [],
     companies: [],
     content: '',
+    tags: [],
   });
 
   onMounted(async () => {
@@ -300,6 +313,13 @@
     companyList.value = data;
   };
   fetchCompanyList();
+
+  const tagList = ref<tagRecord[]>([]);
+  const fetchTagList = async () => {
+    const { data } = await getTagList({ paging: 0 });
+    tagList.value = data;
+  };
+  fetchTagList();
 
   const vendorList = ref<vendorRecord[]>([]);
   const fetchVendorList = async () => {

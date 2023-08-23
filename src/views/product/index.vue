@@ -11,12 +11,12 @@
             label-align="left"
           >
             <a-row :gutter="16">
-              <a-col :span="12">
+              <a-col :span="8">
                 <a-form-item field="title" label="商品名称">
                   <a-input v-model="formModel.title" placeholder="商品名称" />
                 </a-form-item>
               </a-col>
-              <a-col :span="12">
+              <a-col :span="8">
                 <a-form-item field="product_number" label="商品编码">
                   <a-input
                     v-model="formModel.product_number"
@@ -24,7 +24,7 @@
                   />
                 </a-form-item>
               </a-col>
-              <a-col :span="12">
+              <a-col :span="8">
                 <a-form-item field="vendor_id" label="供应商">
                   <a-select v-model="formModel.vendor_id" :allow-clear="true">
                     <a-option
@@ -36,11 +36,23 @@
                   </a-select>
                 </a-form-item>
               </a-col>
-              <a-col :span="12">
+              <a-col :span="8">
                 <a-form-item field="company_id" label="商城">
                   <a-select v-model="formModel.companies" multiple>
                     <a-option
                       v-for="(item, key) in companyList"
+                      :key="key"
+                      :value="item.id"
+                      >{{ item.name }}</a-option
+                    >
+                  </a-select>
+                </a-form-item>
+              </a-col>
+              <a-col :span="8">
+                <a-form-item field="tags" label="标签">
+                  <a-select v-model="formModel.tags" multiple>
+                    <a-option
+                      v-for="(item, key) in tagList"
                       :key="key"
                       :value="item.id"
                       >{{ item.name }}</a-option
@@ -192,6 +204,11 @@
     PolicyRecord as CompanyRecord,
   } from '@/api/company';
 
+  import {
+    queryPolicyList as getTagList,
+    PolicyRecord as tagRecord,
+  } from '@/api/tag';
+
   import FormModal from './components/form-modal.vue';
 
   const modalVisble = ref(false);
@@ -204,6 +221,7 @@
       product_number: '',
       vendor_id: '',
       companies: [],
+      tags: [],
     };
   };
   const { loading, setLoading } = useLoading(true);
@@ -236,6 +254,13 @@
     companyList.value = data;
   };
   fetchCompanyList();
+
+  const tagList = ref<tagRecord[]>([]);
+  const fetchTagList = async () => {
+    const { data } = await getTagList({ paging: 0 });
+    tagList.value = data;
+  };
+  fetchTagList();
 
   const columnsList = ref<TableColumnData[]>([
     {

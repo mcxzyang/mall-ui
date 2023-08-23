@@ -28,6 +28,7 @@ export interface PolicyRecord {
   created_at?: string;
   companies: PropType<number[]>;
   content: string;
+  tags: PropType<number[]>;
 }
 
 export interface PolicyParams extends Partial<PolicyRecord> {

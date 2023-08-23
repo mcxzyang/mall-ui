@@ -85,6 +85,24 @@
         <a-col :span="8">
           <a-form-item label="售后状态">
             {{ orderAfterSaleData?.after_status_text }}
+            <a-popconfirm
+              v-if="orderAfterSaleData?.after_status === 5"
+              content="确定将此售后状态置为退款成功吗?"
+              type="warning"
+              @ok="handleAfterStatusSuccess(orderAfterSaleData)"
+            >
+              <a-button
+                type="text"
+                status="success"
+                size="mini"
+                :loading="btnLoading"
+              >
+                <template #icon>
+                  <icon-send />
+                </template>
+                置为退款成功
+              </a-button>
+            </a-popconfirm>
           </a-form-item>
         </a-col>
       </a-row>
@@ -109,10 +127,8 @@
           </a-form-item>
         </a-col>
         <a-col :span="8">
-          <a-form-item label="订单来源">
-            <a-tag :color="orderAfterSaleData?.order?.source_color">{{
-              orderAfterSaleData?.order?.source_text
-            }}</a-tag>
+          <a-form-item label="商城来源">
+            {{ orderAfterSaleData?.order?.company?.name }}
           </a-form-item>
         </a-col>
         <a-col :span="8">
@@ -196,6 +212,7 @@
     OrderAfterSaleRecord,
     getRecord,
     auditRecord,
+    statusSuccess,
   } from '@/api/orderAfterSale';
 
   import { Message } from '@arco-design/web-vue';
@@ -292,6 +309,14 @@
     btnLoading.value = true;
     await auditRecord(orderAfterSaleData.value?.id, { type });
 
+    btnLoading.value = false;
+    Message.success('操作成功');
+    fetchData();
+  };
+
+  const handleAfterStatusSuccess = async (orderAfterSale: any) => {
+    btnLoading.value = true;
+    await statusSuccess(orderAfterSale?.id);
     btnLoading.value = false;
     Message.success('操作成功');
     fetchData();
