@@ -1,8 +1,9 @@
 import axios from 'axios';
 import type { AxiosRequestConfig, AxiosResponse } from 'axios';
-import { Message, Modal } from '@arco-design/web-vue';
+import { Message } from '@arco-design/web-vue';
 import { useUserStore } from '@/store';
 import { getToken } from '@/utils/auth';
+import { useRouter } from 'vue-router';
 
 export interface HttpResponse<T = unknown> {
   status: number;
@@ -50,21 +51,16 @@ axios.interceptors.response.use(
     // }
     return res;
   },
-  (error) => {
-    const { message, status } = error.response.data;
+  async (error) => {
+    const { message } = error.response.data;
+    const { status } = error.response;
     if (status === 401) {
-      Modal.error({
-        title: 'Confirm logout',
-        content:
-          'You have been logged out, you can cancel to stay on this page, or log in again',
-        okText: 'Re-Login',
-        async onOk() {
-          const userStore = useUserStore();
+      const userStore = useUserStore();
+      const router = useRouter();
 
-          await userStore.logout();
-          window.location.reload();
-        },
-      });
+      userStore.logoutCallBack();
+      router.push({ name: 'login' });
+      // window.location.reload();
     }
     Message.error({
       content: message || 'Request Error',
