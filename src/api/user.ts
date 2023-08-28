@@ -11,6 +11,11 @@ export interface LoginData {
 export interface LoginRes {
   access_token: string;
 }
+
+export function updatePassword(params: any) {
+  return axios.put('/auth/updatePassword', params);
+}
+
 export function login(data: LoginData) {
   return axios.post<LoginRes>('/auth/login', data);
 }
