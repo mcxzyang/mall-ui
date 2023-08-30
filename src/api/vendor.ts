@@ -11,6 +11,8 @@ export interface PolicyRecord {
   client_secret?: string;
   status?: number;
   created_at?: string;
+  username: string;
+  password?: string;
 }
 
 export interface PolicyParams extends Partial<PolicyRecord> {

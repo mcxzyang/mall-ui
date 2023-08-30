@@ -29,7 +29,7 @@ export function getUserInfo() {
 }
 
 export function getMenuList() {
-  return axios.post<RouteRecordNormalized[]>('/api/user/menu');
+  return axios.get<RouteRecordNormalized[]>('/auth/menu');
 }
 
 export interface PolicyRecord {
