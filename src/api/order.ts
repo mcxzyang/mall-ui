@@ -91,6 +91,10 @@ export function deliveryOrderItem(id: number | string, params: any) {
   return axios.post<any>(`/orderItem/${id}/delivery`, params);
 }
 
+export function statOrder(params: any) {
+  return axios.get<any>(`/order/dashboard/stat`, { params });
+}
+
 export function getSourceTypeList() {
   return axios.get<sourceType[]>(`/order/sourceType/list`);
 }

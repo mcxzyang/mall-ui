@@ -93,6 +93,23 @@
         </a-col>
       </a-row>
       <a-divider style="margin-top: 0" />
+      <a-grid :cols="24" :row-gap="16" class="panel">
+        <a-grid-item
+          v-for="(item, key) in statList"
+          :key="key"
+          :span="{ xs: 6, sm: 6, md: 6, lg: 6, xl: 6, xxl: 6 }"
+        >
+          <a-space>
+            <a-statistic
+              :title="item.label"
+              :value="item.value"
+              show-group-separator
+            >
+            </a-statistic>
+          </a-space>
+        </a-grid-item>
+      </a-grid>
+      <a-divider style="margin-top: 0" />
 
       <a-table
         row-key="id"
@@ -170,6 +187,8 @@
   import { Pagination } from '@/types/global';
   import type { TableColumnData } from '@arco-design/web-vue/es/table/interface';
 
+  import dayjs from 'dayjs';
+
   import {
     queryOrderList,
     OrderRecord,
@@ -180,6 +199,7 @@
     statusRecord,
     getStatusMapping,
     downloadExcel,
+    statOrder,
   } from '@/api/order';
 
   import {
@@ -190,12 +210,15 @@
   import { Message } from '@arco-design/web-vue';
   import router from '@/router';
 
+  const yesterday = dayjs().subtract(1, 'day').format('YYYY-MM-DD');
+  const tomorrow = dayjs().add(1, 'day').format('YYYY-MM-DD');
+
   const generateFormModel = () => {
     return {
       order_no: '',
       source: '',
       type: '',
-      created_at: [],
+      created_at: [yesterday, tomorrow],
       status: '',
       companies: [],
       receive: '',
@@ -330,6 +353,12 @@
     }
   };
 
+  const statList = ref([]) as any;
+  const fetchStat = async (params: any) => {
+    const { data } = await statOrder(params);
+    statList.value = data;
+  };
+
   const handleView = (item: any) => {
     router.push({
       name: 'OrderDetail',
@@ -349,14 +378,20 @@
       ...basePagination,
       ...formModel.value,
     };
+    fetchStat(formModel.value);
     fetchData(searchParams.value);
   };
   const onPageChange = (page: number) => {
     searchParams.value = { ...basePagination, ...formModel.value, page };
     fetchData(searchParams.value);
   };
+  searchParams.value = {
+    ...basePagination,
+    ...formModel.value,
+  };
+  fetchStat(formModel.value);
 
-  fetchData();
+  fetchData(searchParams.value);
   // const reset = () => {
   //   formModel.value = generateFormModel();
   // };
@@ -389,3 +424,29 @@
     }
   };
 </script>
+
+<style lang="less" scoped>
+  .arco-grid.panel {
+    margin-bottom: 0;
+    padding: 20px;
+  }
+  .panel-col {
+    padding-left: 43px;
+    border-right: 1px solid rgb(var(--gray-2));
+  }
+  .col-avatar {
+    margin-right: 12px;
+    background-color: var(--color-fill-2);
+  }
+  .up-icon {
+    color: rgb(var(--red-6));
+  }
+  .unit {
+    margin-left: 8px;
+    color: rgb(var(--gray-8));
+    font-size: 12px;
+  }
+  :deep(.panel-border) {
+    margin: 4px 0 0 0;
+  }
+</style>
