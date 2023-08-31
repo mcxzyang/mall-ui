@@ -1,8 +1,8 @@
 <template>
   <div class="content">
-    <a-result class="result" status="404" :subtitle="'not found'"> </a-result>
+    <a-result class="result" status="404" :subtitle="'没有权限'"> </a-result>
     <div class="operation-row">
-      <a-button key="back" type="primary" @click="back"> back </a-button>
+      <a-button key="back" type="primary" @click="back"> 返回首页 </a-button>
     </div>
   </div>
 </template>
