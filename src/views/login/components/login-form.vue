@@ -41,6 +41,23 @@
           </template>
         </a-input-password>
       </a-form-item>
+      <a-form-item
+        class="login-form-captcha"
+        field="captcha"
+        hide-label
+        :rules="[{ required: true, message: '验证码不能为空' }]"
+        :validate-trigger="['change', 'blur']"
+      >
+        <a-input
+          v-model="userInfo.captcha"
+          placeholder="请填写验证码"
+          allow-clear
+          style="width: 75%"
+        >
+          <template #prefix><icon-check-circle /></template>
+        </a-input>
+        <img :src="captchaImgBase64" alt="验证码" @click="getCaptcha" />
+      </a-form-item>
       <a-space :size="16" direction="vertical">
         <div class="login-form-password-actions">
           <a-checkbox
@@ -48,7 +65,7 @@
             :model-value="loginConfig.rememberPassword"
             @change="setRememberPassword as any"
           >
-            {{ $t('login.form.rememberPassword') }}
+            记住用户名
           </a-checkbox>
         </div>
         <a-button type="primary" html-type="submit" long :loading="loading">
@@ -79,6 +96,8 @@
   const { loading, setLoading } = useLoading();
   const userStore = useUserStore();
 
+  const captchaImgBase64 = ref('');
+
   const loginConfig = useStorage('login-config', {
     rememberPassword: true,
     username: '', // 演示默认值
@@ -87,7 +106,20 @@
   const userInfo = reactive({
     username: loginConfig.value.username,
     password: loginConfig.value.password,
+    captcha: '',
+    key: '',
   });
+
+  /**
+   * 获取验证码
+   */
+  const getCaptcha = () => {
+    userStore.getImgCaptcha().then((res) => {
+      userInfo.key = res.data.key;
+      captchaImgBase64.value = res.data.img;
+    });
+  };
+  getCaptcha();
 
   const handleSubmit = async ({
     errors,
@@ -109,14 +141,15 @@
           },
         });
         Message.success(t('login.form.login.success'));
-        // const { rememberPassword } = loginConfig.value;
-        // const { username, password } = values;
+        const { rememberPassword } = loginConfig.value;
+        const { username } = values;
         // // 实际生产环境需要进行加密存储。
         // // The actual production environment requires encrypted storage.
-        // loginConfig.value.username = rememberPassword ? username : '';
+        loginConfig.value.username = rememberPassword ? username : '';
         // loginConfig.value.password = rememberPassword ? password : '';
       } catch (err) {
-        errorMessage.value = (err as Error).message;
+        getCaptcha();
+        userInfo.captcha = '';
       } finally {
         setLoading(false);
       }

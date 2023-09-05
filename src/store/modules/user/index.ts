@@ -7,6 +7,7 @@ import {
 } from '@/api/user';
 import { setToken, clearToken } from '@/utils/auth';
 import { removeRouteListener } from '@/utils/route-listener';
+import { getImageCaptcha as getCaptcha } from '@/api/captcha';
 import { UserState } from './types';
 import useAppStore from '../app';
 
@@ -37,6 +38,10 @@ const useUserStore = defineStore('user', {
   },
 
   actions: {
+    // 获取图片验证码
+    getImgCaptcha() {
+      return getCaptcha();
+    },
     switchRoles() {
       return new Promise((resolve) => {
         this.role = this.role === 'user' ? 'admin' : 'user';
